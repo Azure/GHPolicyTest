@@ -29,7 +29,7 @@ body:
       description: How would you best describe this issue? Is this a...
       options:
         - Feature Request
-        - Bug
+        - _Bug_
         - I'm not sure
     validations:
       required: true
