@@ -97,12 +97,14 @@ configuration:
 
       - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
         if:
-          - payloadType: Issues
+          - or:
+            - payloadType: Issues
+            - payloadType: Issue_Comment
           - and:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/### Issue Type\?\n\s+Feature Request/'
+                pattern: '/Issue Type\?\n+Feature Request/'
                 isRegex: true
         then:
           - addLabel:
@@ -110,12 +112,14 @@ configuration:
 
       - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
         if:
-          - payloadType: Issues
+          - or:
+            - payloadType: Issues
+            - payloadType: Issue_Comment
           - and:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/### Issue Type\?\n\s+Bug/'
+                pattern: '/Issue Type\?\n+Bug/'
                 isRegex: true
         then:
           - addLabel:
