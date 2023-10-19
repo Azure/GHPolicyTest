@@ -114,8 +114,13 @@ configuration:
             - payloadType: Issues
             - payloadType: Issue_Comment
           - and:
-            - isAction:
-                action: Opened
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited
             - bodyContains:
                 pattern: '### Issue Type\?\n+Feature Request'
                 isRegex: true
@@ -129,8 +134,13 @@ configuration:
             - payloadType: Issues
             - payloadType: Issue_Comment
           - and:
-            - isAction:
-                action: Opened
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited
             - bodyContains:
                 pattern: '### Issue Type\?\n+Bug'
                 isRegex: true
