@@ -31,12 +31,31 @@ configuration:
         if:
           - or:
             - payloadType: Issues
-            - payloadType: Issue_Comment
             - payloadType: Pull_Request
-            - payloadType: Pull_Request_Review_Comment
           - and:
             - isAction:
                 action: Opened
+            - or:
+              - bodyContains:
+                  pattern: 'AVM'
+              - bodyContains:
+                  pattern: 'Azure Verified Modules'
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'Azure Verified Modules'
+        then:
+          - addLabel:
+              label: 'Type: AVM :a: :v: :m:'
+
+      - description: 'XXXXXX - If "AVM" or "Azure Verified Modules" is mentioned in a new issue, add label of "Type: AVM :a: :v: :m:" on the issue'
+        if:
+          - or:
+            - payloadType: Issue_Comment
+            - payloadType: Pull_Request_Review_Comment
+          - and:
+            - isAction:
+                action: Created, Edited
             - or:
               - bodyContains:
                   pattern: 'AVM'
@@ -104,7 +123,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/Issue Type\?\n+Feature Request/'
+                pattern: /Issue Type\?\n+Feature Request/
                 isRegex: true
         then:
           - addLabel:
@@ -119,7 +138,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/Issue Type\?\n+Bug/'
+                pattern: /Issue Type\?\n+Bug/
                 isRegex: true
         then:
           - addLabel:
