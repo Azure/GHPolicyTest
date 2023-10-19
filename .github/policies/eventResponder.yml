@@ -33,24 +33,32 @@ configuration:
             - payloadType: Issues
             - payloadType: Pull_Request
             - payloadType: Issue_Comment
-            - payloadType: Pull_Request_Review_Comment                                            
-          - or:
-            - bodyContains:
-                pattern: 'AVM'
-            - bodyContains:
-                pattern: 'avm'
-            - bodyContains:
-                pattern: 'Azure Verified Modules'
-            - bodyContains:
-                pattern: 'azure verified modules'                                    
-            - commentContains:
-                pattern: 'AVM'
-            - commentContains:
-                pattern: 'avm'
-            - commentContains:
-                pattern: 'AVM'
-            - commentContains:
-                pattern: 'azure verified modules'                  
+            - payloadType: Pull_Request_Review_Comment            
+          - and:
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited                                    
+            - or:
+              - bodyContains:
+                  pattern: 'AVM'
+              - bodyContains:
+                  pattern: 'avm'
+              - bodyContains:
+                  pattern: 'Azure Verified Modules'
+              - bodyContains:
+                  pattern: 'azure verified modules'                                    
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'avm'
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'azure verified modules'                  
         then:
           - addLabel:
               label: 'Type: AVM :a: :v: :m:'
