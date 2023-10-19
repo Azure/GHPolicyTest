@@ -108,23 +108,57 @@ configuration:
         then:
           - cleanEmailReply
 
+      # - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+      #   if:
+      #     - or:
+      #       - payloadType: Issues
+      #       - payloadType: Issue_Comment
+      #     - and:
+      #       - or:
+      #         - isAction:
+      #             action: Opened
+      #         - isAction:
+      #             action: Created
+      #         - isAction:
+      #             action: Edited
+      #       - or:
+      #         - bodyContains:
+      #             pattern: '### Issue Type\?\n+Feature Request'
+      #             isRegex: true
+      #         - commentContains:
+      #             pattern: '### Issue Type\?\n+Feature Request'
+      #             isRegex: true
+      #   then:
+      #     - addLabel:
+      #         label: 'Type: Feature Request :heavy_plus_sign:'
+
       - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
         if:
           - or:
             - payloadType: Issues
-            - payloadType: Issue_Comment
           - and:
             - or:
               - isAction:
                   action: Opened
+            - or:
+              - bodyContains:
+                  pattern: '### Issue Type\?\n+Feature Request'
+                  isRegex: true
+        then:
+          - addLabel:
+              label: 'Type: Feature Request :heavy_plus_sign:'
+
+      - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+        if:
+          - or:
+            - payloadType: Issue_Comment
+          - and:
+            - or:
               - isAction:
                   action: Created
               - isAction:
                   action: Edited
             - or:
-              - bodyContains:
-                  pattern: '### Issue Type\?\n+Feature Request'
-                  isRegex: true
               - commentContains:
                   pattern: '### Issue Type\?\n+Feature Request'
                   isRegex: true
