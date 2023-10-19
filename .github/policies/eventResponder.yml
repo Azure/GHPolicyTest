@@ -123,9 +123,9 @@ configuration:
                   action: Edited
             - or:
               - bodyContains:
-                  pattern: '- Feature Request'
+                  pattern: '+ Feature Request'
               - commentContains:
-                  pattern: '- Feature Request'
+                  pattern: '+ Feature Request'
         then:
           - addLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
@@ -147,9 +147,9 @@ configuration:
                   action: Edited
             - or:
               - bodyContains:
-                  pattern: '- Bug'
+                  pattern: '+ Bug'
               - commentContains:
-                  pattern: '- Bug'
+                  pattern: '+ Bug'
         then:
           - addLabel:
               label: 'Type: Bug :bug:'
