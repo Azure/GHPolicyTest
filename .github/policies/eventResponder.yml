@@ -121,9 +121,13 @@ configuration:
                   action: Created
               - isAction:
                   action: Edited
-            - bodyContains:
-                pattern: '### Issue Type\?\n+Feature Request'
-                isRegex: true
+            - or:
+              - bodyContains:
+                  pattern: '### Issue Type\?\n+Feature Request'
+                  isRegex: true
+              - commentContains:
+                  pattern: '### Issue Type\?\n+Feature Request'
+                  isRegex: true
         then:
           - addLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
@@ -141,9 +145,13 @@ configuration:
                   action: Created
               - isAction:
                   action: Edited
-            - bodyContains:
-                pattern: '### Issue Type\?\n+Bug'
-                isRegex: true
+            - or:
+              - bodyContains:
+                  pattern: '### Issue Type\?\n+Bug'
+                  isRegex: true
+              - commentContains:
+                  pattern: '### Issue Type\?\n+Bug'
+                  isRegex: true
         then:
           - addLabel:
               label: 'Type: Bug :bug:'
