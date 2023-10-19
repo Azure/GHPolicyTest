@@ -28,8 +28,8 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
-        - Feature Request
-        - Bug
-        - I'm not sure
+        - _Feature Request_
+        - _Bug_
+        - _I'm not sure_
     validations:
       required: true
