@@ -55,7 +55,7 @@ configuration:
             - payloadType: Pull_Request_Review_Comment
           - and:
             - isAction:
-                action: Created, Edited
+                action: Created
             - or:
               - bodyContains:
                   pattern: 'AVM'
