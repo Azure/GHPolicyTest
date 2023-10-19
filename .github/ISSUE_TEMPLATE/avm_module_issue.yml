@@ -1,6 +1,6 @@
 name: AVM - Module Issue 📝🪲
 description: Want to request a new Module feature or report a bug? Let us know!
-title: "[AVM Module Feature request/Bug]: "
+title: "[AVM Module Issue]: "
 labels: ["Type: AVM :a: :v: :m:", "Needs: Triage :mag:"]
 body:
   - type: markdown
@@ -30,6 +30,7 @@ body:
       options:
         - '+ Feature Request'
         - '+ Bug'
+        - '+ Security Bug'
         - '+ I''m not sure'
     validations:
       required: true
