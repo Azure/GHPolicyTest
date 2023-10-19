@@ -117,7 +117,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: /Issue Type\?\n+Feature Request/
+                pattern: \nFeature Request
                 isRegex: true
         then:
           - addLabel:
@@ -132,7 +132,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: /Issue Type\?\n+Bug/
+                pattern: \nBug
                 isRegex: true
         then:
           - addLabel:
