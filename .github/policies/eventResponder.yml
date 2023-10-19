@@ -123,9 +123,11 @@ configuration:
                   action: Edited
             - or:
               - bodyContains:
-                  pattern: '### Issue Type?\n+ Feature Request'
+                  pattern: '### Issue Type?
+                  + Feature Request'
               - commentContains:
-                  pattern: '### Issue Type?\n+ Feature Request'
+                  pattern: '### Issue Type?
+                  + Feature Request'
         then:
           - addLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
@@ -148,9 +150,11 @@ configuration:
                   action: Edited
             - or:
               - bodyContains:
-                  pattern: '### Issue Type?\n+ Bug'
+                  pattern: '### Issue Type?
+                  + Bug'
               - commentContains:
-                  pattern: '### Issue Type?\n+ Bug'
+                  pattern: '### Issue Type?
+                  + Bug'
         then:
           - addLabel:
               label: 'Type: Bug :bug:'
@@ -173,9 +177,11 @@ configuration:
                   action: Edited
             - or:
               - bodyContains:
-                  pattern: '### Issue Type?\n+ Security Bug'
+                  pattern: '### Issue Type?
+                  + Security Bug'
               - commentContains:
-                  pattern: '### Issue Type?\n+ Security Bug'
+                  pattern: '### Issue Type?
+                  + Security Bug'
         then:
           - addLabel:
               label: 'Type: Security Bug :lock:'
