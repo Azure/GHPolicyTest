@@ -117,7 +117,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: \nFeature Request
+                pattern: '\nFeature Request'
                 isRegex: true
         then:
           - addLabel:
@@ -132,8 +132,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: \nBug
-                isRegex: true
+                pattern: _Bug_
         then:
           - addLabel:
               label: 'Type: Bug :bug:'
