@@ -27,28 +27,28 @@ configuration:
           - addLabel:
               label: 'Needs: Triage :mag:'
 
-      # - description: 'ITA08BCP - If "AVM" or "Azure Verified Modules" is mentioned in a new issue, add label of "Type: AVM :a: :v: :m:" on the issue'
-      #   if:
-      #     - or:
-      #       - payloadType: Issues
-      #       - payloadType: Issue_Comment
-      #       - payloadType: Pull_Request
-      #       - payloadType: Pull_Request_Review_Comment
-      #     - and:
-      #       - isAction:
-      #           action: Opened
-      #       - or:
-      #         - bodyContains:
-      #             pattern: 'AVM'
-      #         - bodyContains:
-      #             pattern: 'Azure Verified Modules'
-      #         - commentContains:
-      #             pattern: 'AVM'
-      #         - commentContains:
-      #             pattern: 'Azure Verified Modules'
-      #   then:
-      #     - addLabel:
-      #         label: 'Type: AVM :a: :v: :m:'
+      - description: 'ITA08BCP - If "AVM" or "Azure Verified Modules" is mentioned in a new issue, add label of "Type: AVM :a: :v: :m:" on the issue'
+        if:
+          - or:
+            - payloadType: Issues
+            - payloadType: Issue_Comment
+            - payloadType: Pull_Request
+            - payloadType: Pull_Request_Review_Comment
+          - and:
+            - isAction:
+                action: Opened
+            - or:
+              - bodyContains:
+                  pattern: 'AVM'
+              - bodyContains:
+                  pattern: 'Azure Verified Modules'
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'Azure Verified Modules'
+        then:
+          - addLabel:
+              label: 'Type: AVM :a: :v: :m:'
 
       - description: 'ITA09 - When #RR is used in an issue, add the label of "Needs: Author Feedback :ear:"'
         if:
@@ -95,18 +95,31 @@ configuration:
         then:
           - cleanEmailReply
 
-      - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'
+      - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
         if:
           - payloadType: Issues
           - and:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/### Bicep or Terraform\?\n\s+Bicep/'
+                pattern: '/### Issue Type\?\n\s+Feature Request/'
                 isRegex: true
         then:
           - addLabel:
-              label: 'Language: Bicep :muscle:'
+              label: 'Type: Feature Request :heavy_plus_sign:'
+
+      - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
+        if:
+          - payloadType: Issues
+          - and:
+            - isAction:
+                action: Opened
+            - bodyContains:
+                pattern: '/### Issue Type\?\n\s+Bug/'
+                isRegex: true
+        then:
+          - addLabel:
+              label: 'Type: Bug :bug:'
 
       - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
         if:
