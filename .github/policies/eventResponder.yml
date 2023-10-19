@@ -129,6 +129,8 @@ configuration:
         then:
           - addLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
+          - removeLabel:
+              label: 'Type: Bug :bug:'              
 
       - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
         if:
@@ -151,6 +153,8 @@ configuration:
         then:
           - addLabel:
               label: 'Type: Bug :bug:'
+          - removeLabel:
+              label: 'Type: Feature Request :heavy_plus_sign:'                   
 
       - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
         if:
