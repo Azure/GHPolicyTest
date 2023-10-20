@@ -6,6 +6,12 @@ body:
   - type: markdown
     attributes:
       value: |
+        Thank you for your question/feedback!
+
+        If you are proposing a new AVM module, please follow the process [here](https://aka.ms/avm/moduleproposal).
+  - type: markdown
+    attributes:
+      value: |
         Thank you for your question/feedback
   # - type: checkboxes
   #   id: existing-checks
