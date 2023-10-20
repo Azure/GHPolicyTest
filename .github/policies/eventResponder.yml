@@ -326,12 +326,12 @@ configuration:
                   ### Do you want to be the owner of this module?
 
                   No
-            # -not:
-            #   - bodyContains:
-            #       pattern: |
-            #         ### Module Owner's GitHub Username (handle)
+            -not:
+              bodyContains:
+                pattern: |
+                  ### Module Owner's GitHub Username (handle)
 
-            #         _No response_
+                  _No response_
         then:
           - addLabel:
               label: 'Status: Owners Identified :metal:'
