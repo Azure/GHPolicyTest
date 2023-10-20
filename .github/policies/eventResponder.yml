@@ -498,9 +498,6 @@ configuration:
               - payloadType: Pull_Request
               - payloadType: Pull_Request_Review
               - payloadType: Pull_Request_Review_Comment
-          - not:
-              isAction:
-                action: Closed
         then:
           - labelSync:
               pattern: documentation
