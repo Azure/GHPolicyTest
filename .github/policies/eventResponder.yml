@@ -234,33 +234,33 @@ configuration:
       #     - removeLabel:
       #         label: 'Language: Bicep :muscle:'
   
-      #   - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'
-      #   if:
-      #     - payloadType: Issues
-      #     - isAction:
-      #         action: Opened
-      #     - bodyContains:
-      #         pattern: |
-      #           ### Bicep or Terraform?
+        - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'      
+          if:
+            - payloadType: Issues
+            - isAction:
+                action: Opened
+            - bodyContains:
+                pattern: |
+                  ### Bicep or Terraform?
 
-      #           Bicep
-      #   then:
-      #     - addLabel:
-      #         label: 'Language: Bicep :muscle:'
+                  Bicep
+          then:
+            - addLabel:
+                label: 'Language: Bicep :muscle:'
 
-      # - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
-      #   if:
-      #     - payloadType: Issues
-      #     - isAction:
-      #         action: Opened
-      #     - bodyContains:
-      #         pattern: |
-      #           ### Bicep or Terraform?
+      - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Bicep or Terraform?
 
-      #           Terraform
-      #   then:
-      #     - addLabel:
-      #         label: 'Language: Terraform :globe_with_meridians:'
+                Terraform
+        then:
+          - addLabel:
+              label: 'Language: Terraform :globe_with_meridians:'
 
       - description: 'ITA15 - remove the "Needs: Triage" label from a PR, if it already has a "Type: XYZ" label assigned at the time of creating it.'
         if:
