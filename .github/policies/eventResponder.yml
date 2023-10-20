@@ -7,7 +7,7 @@ disabled: false
 configuration:
   resourceManagementConfiguration:
     eventResponderTasks:
-      - description: ITA06 - If a new issue is opened add the needs triage label
+      - description: 'ITA06 - If a new issue or PR is opened add the "Needs: Triage :mag:" label'
         if:
           - or:
             - payloadType: Issues
