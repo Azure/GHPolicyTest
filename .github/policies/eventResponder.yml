@@ -326,7 +326,7 @@ configuration:
                   ### Do you want to be the owner of this module?
 
                   No
-            -not:
+            - not:
               bodyContains:
                 pattern: |
                   ### Module Owner's GitHub Username (handle)
