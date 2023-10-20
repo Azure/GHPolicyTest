@@ -503,9 +503,9 @@ configuration:
                 action: Closed
         then:
           - labelSync:
-              pattern: *
-          # - labelSync:
-          #     pattern: Status
+              pattern: documentation
+          - labelSync:
+              pattern: bug
           # - labelSync:
           #     pattern: Type
           # - labelSync:
