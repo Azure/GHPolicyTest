@@ -286,4 +286,4 @@ configuration:
           - assignTo:
               author: true
           - addReply:
-              reply: @${issueAuthor}, thanks for volunteering to be a module owner! **Please don't start the development just yet!**\n\nThe AVM core team will review the proposal and respond to your first. Thank you!
+              reply: '@${issueAuthor}, thanks for volunteering to be a module owner! **Please don't start the development just yet!**\n\nThe AVM core team will review the proposal and respond to your first. Thank you!'
