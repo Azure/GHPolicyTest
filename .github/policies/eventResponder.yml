@@ -186,6 +186,18 @@ configuration:
           - removeLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
 
+      - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'
+        if:
+          - payloadType: Issues
+          - and:
+            - isAction:
+                action: Opened
+            - bodyContains:
+                pattern: '+ Bicep'
+        then:
+          - addLabel:
+              label: 'Language: Bicep :muscle:'
+
       - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
         if:
           - payloadType: Issues
@@ -193,8 +205,7 @@ configuration:
             - isAction:
                 action: Opened
             - bodyContains:
-                pattern: '/### Bicep or Terraform\?\n\s+Terraform/'
-                isRegex: true
+                pattern: '+ Terraform'
         then:
           - addLabel:
               label: 'Language: Terraform :globe_with_meridians:'
