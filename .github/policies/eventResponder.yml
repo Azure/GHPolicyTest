@@ -54,7 +54,7 @@ configuration:
           - addLabel:
               label: 'Type: AVM :a: :v: :m:'
 
-      - description: 'ITA09 - When #RR is used in an issue, add the label of "Needs: Author Feedback :ear:"'
+      - description: 'ITA09 - When #RR is used in an issue, add the "Needs: Author Feedback :ear:" label'
         if:
           - or:
               - payloadType: Pull_Request_Review_Comment
@@ -294,7 +294,7 @@ configuration:
           - addLabel:
               label: 'Status: Owners Identified :metal:'
 
-      - description: 'ITA17 - If author says they want to be the owner of the module, assign the issue to the author and respond to them'
+      - description: 'ITA17 - If the issue author says they want to be the module owner, assign the issue to the author and respond to them.'
         if:
           - payloadType: Issues
           - isAction:
@@ -309,11 +309,13 @@ configuration:
               author: true
           - addReply:
               reply: |
-                @${issueAuthor}, thanks for volunteering to be a module owner! **Please don't start the development just yet!**
+                @${issueAuthor}, thanks for volunteering to be a module owner! 
+                
+                **Please don't start the development just yet!**
                 
                 The AVM core team will review this module proposal and respond to you first. Thank you!
 
-      - description: 'ITA18 - Automatic response to the issue author if they don''t want to be the owner and don''t have any candidate in mind'
+      - description: 'ITA18 - Send automatic response to the issue author if they don''t want to be module owner and don''t have any candidate in mind. Assign the "Needs: Module Owner :mega:" label.'
         if:
           - payloadType: Issues
           - isAction:
@@ -332,9 +334,11 @@ configuration:
               label: 'Needs: Module Owner :mega:'
           - addReply:
               reply: |
-                @${issueAuthor}, thanks for submitting this module proposal! The AVM core team will review it and will try to find a module owner.
+                @${issueAuthor}, thanks for submitting this module proposal! 
+                
+                The AVM core team will review it and will try to find a module owner.
 
-      - description: 'ITA19 - Automatic response to the issue author if they don''t want to be the owner but have a candidate in mind'
+      - description: 'ITA19 - Send automatic response to the issue author if they don''t want to be module owner but have a candidate in mind. Assign the "Status: Owners Identified :metal:" label.'
         if:
           - payloadType: Issues
           - isAction:
@@ -355,11 +359,13 @@ configuration:
               label: 'Status: Owners Identified :metal:'
           - addReply:
               reply: |
-                @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
+                @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! 
+                
+                **Please don't start the development just yet!**
                 
                 The AVM core team will review this module proposal and respond to you and/or the module owner first. Thank you!
 
-      - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+      - description: 'ITA20 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
         if:
           - payloadType: Issues
           - isAction:
@@ -373,7 +379,7 @@ configuration:
           - addLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
 
-      - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
+      - description: 'ITA21 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
         if:
           - payloadType: Issues
           - isAction:
@@ -387,7 +393,7 @@ configuration:
           - addLabel:
               label: 'Type: Bug :bug:'
 
-      - description: 'TEST3 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
+      - description: 'ITA22 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
         if:
           - payloadType: Issues
           - isAction:
@@ -400,3 +406,88 @@ configuration:
         then:
           - addLabel:
               label: 'Type: Security Bug :lock:'
+
+      - description: Sync labels with issues on all pull request events
+        if:
+          - or:
+              - payloadType: Pull_Request
+              - payloadType: Pull_Request_Review
+              - payloadType: Pull_Request_Review_Comment
+          - not:
+              isAction:
+                action: Closed
+        then:
+          - labelSync:
+              pattern: 'Needs: Attention :wave:'
+          - labelSync:
+              pattern: 'Needs: Immediate Attention :bangbang:'
+          - labelSync:
+              pattern: 'Needs: Author Feedback :ear:'
+          - labelSync:
+              pattern: 'Needs: External Changes :hammer_and_pick:'
+          - labelSync:
+              pattern: 'Needs: More Evidence :balance_scale:'
+          - labelSync:
+              pattern: 'Needs: Triage :mag:'
+          - labelSync:
+              pattern: 'Needs: Module Owner :mega:'
+          - labelSync:
+              pattern: 'Status: Awaiting Release To Be Cut :scissors:'
+          - labelSync:
+              pattern: 'Status: Do Not Merge :no_entry:'
+          - labelSync:
+              pattern: 'Status: External Contribution :earth_africa:'
+          - labelSync:
+              pattern: 'Status: Fixed :white_check_mark:'
+          - labelSync:
+              pattern: 'Status: Help Wanted :sos:'
+          - labelSync:
+              pattern: 'Status: In Triage :mag:'
+          - labelSync:
+              pattern: 'Status: Invalid :x:'
+          - labelSync:
+              pattern: 'Status: Long Term :hourglass_flowing_sand:'
+          - labelSync:
+              pattern: 'Status: No Recent Activity :zzz:'
+          - labelSync:
+              pattern: 'Status: Won't Fix :broken_heart:'
+          - labelSync:
+              pattern: 'Status: Migrate from CARML :articulated_lorry:'
+          - labelSync:
+              pattern: 'Status: Migrate from TFVM :articulated_lorry:'
+          - labelSync:
+              pattern: 'Status: Owners Identified :metal:'
+          - labelSync:
+              pattern: 'Status: Module Available :green_circle:'
+          - labelSync:
+              pattern: 'Status: Module Orphaned :eyes:'
+          - labelSync:
+              pattern: 'Status: Response Overdue :triangular_flag_on_post:'
+          - labelSync:
+              pattern: 'Type: Bug :bug:'
+          - labelSync:
+              pattern: 'Type: Documentation :page_facing_up:'
+          - labelSync:
+              pattern: 'Type: Duplicate :palms_up_together:'
+          - labelSync:
+              pattern: 'Type: Feature Request :heavy_plus_sign:'
+          - labelSync:
+              pattern: 'Type: Hygiene :broom:'
+          - labelSync:
+              pattern: 'Type: New Module Proposal :bulb:'
+          - labelSync:
+              pattern: 'Type: Question/Feedback :raising_hand:'
+          - labelSync:
+              pattern: 'Type: Security Bug :lock:'
+          - labelSync:
+              pattern: 'Type: AVM :a: :v: :m:'
+          - labelSync:
+              pattern: 'Language: Terraform :globe_with_meridians:'
+          - labelSync:
+              pattern: 'Language: Bicep :muscle:'
+          - labelSync:
+              pattern: 'Class: Resource Module :package:'
+          - labelSync:
+              pattern: 'Class: Pattern Module :package:'
+          - inPrLabel:
+              label: 'Status: In PR :point_right:'
