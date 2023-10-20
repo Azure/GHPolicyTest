@@ -131,6 +131,7 @@ configuration:
               label: 'Type: Feature Request :heavy_plus_sign:'
           - removeLabel:
               label: 'Type: Bug :bug:'
+          - removeLabel:
               label: 'Type: Security Bug :lock:'
 
       - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
@@ -156,6 +157,7 @@ configuration:
               label: 'Type: Bug :bug:'
           - removeLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
+          - removeLabel:
               label: 'Type: Security Bug :lock:'
 
       - description: 'TEST3 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
@@ -181,6 +183,7 @@ configuration:
               label: 'Type: Security Bug :lock:'
           - removeLabel:
               label: 'Type: Bug :bug:'
+          - removeLabel:
               label: 'Type: Feature Request :heavy_plus_sign:'
 
       - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
