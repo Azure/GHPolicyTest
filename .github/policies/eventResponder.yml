@@ -292,9 +292,9 @@ configuration:
               reply: |
                 @${issueAuthor}, thanks for volunteering to be a module owner! **Please don't start the development just yet!**
                 
-                The AVM core team will review this module proposal and respond to your first. Thank you!
+                The AVM core team will review this module proposal and respond to you first. Thank you!
 
-      - description: 'ITA18 - Automatic response to the issue author if they don''t want to be the owner'
+      - description: 'ITA18 - Automatic response to the issue author if they don''t want to be the owner and don''t have any candidate in mind'
         if:
           - payloadType: Issues
           - isAction:
@@ -304,9 +304,36 @@ configuration:
                 ### Do you want to be the owner of this module?
 
                 No
+
+                ### Module Owner's GitHub Username (handle)
+
+                _No response_
         then:
           - addLabel:
               label: 'Needs: Module Owner :mega:'
           - addReply:
               reply: |
                 @${issueAuthor}, thanks for submitting this module proposal! The AVM core team will review it and will try to find an owner.
+
+      - description: 'ITA19 - Automatic response to the issue author if they don''t want to be the owner but have a candidate in mind'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Do you want to be the owner of this module?
+
+                No
+          -not:
+            - bodyContains:
+                pattern: |
+                  ### Module Owner's GitHub Username (handle)
+
+                  _No response_
+        then:
+          - addReply:
+              reply: |
+                @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
+                
+                The AVM core team will review this module proposal and respond to the module owner first. Thank you!
