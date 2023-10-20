@@ -5,7 +5,7 @@ labels: ["Type: AVM :a: :v: :m:", "Needs: Triage :mag:"]
 body:
   - type: markdown
     attributes:
-      description: '**NOTE**: If you'd like to propose a new AVM module, please follow the process [here](https://aka.ms/avm/moduleproposal).'
+      description: 'NOTE: If you'd like to propose a new AVM module, please follow the process [here](https://aka.ms/avm/moduleproposal).'
       value: |
         Thank you for your question/feedback!
 
