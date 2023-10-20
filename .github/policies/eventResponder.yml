@@ -294,7 +294,7 @@ configuration:
                 
                 The AVM core team will review the proposal and respond to your first. Thank you!
 
-      - description: 'ITA18 - Respond to the issue author (if they don't want to be the owner)'
+      - description: 'ITA18 - Respond to the issue author - if they don't want to be the owner'
         if:
           - payloadType: Issues
           - isAction:
