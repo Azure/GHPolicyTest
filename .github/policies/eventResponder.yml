@@ -263,12 +263,27 @@ configuration:
       - description: 'ITA16 - Add the "Status: Owners Identified :metal:" label when someone is assigned to a Module Proposal'
         if:
           - payloadType: Issues
-          - not:
-              isAction:
-                action: Closed
+          - isAction:
+              action: Opened
           - hasLabel:
               label: 'Type: New Module Proposal :bulb:'
-          - isAssignedToSomeone
         then:
           - addLabel:
               label: 'Status: Owners Identified :metal:'
+
+      - description: 'ITA17 - If author says they want to be the owner of the module, assign the issue to the author'
+        if:
+          - payloadType: Issues
+          - not:
+              isAction:
+                action: Opened
+          - bodyContains:
+              pattern: |
+                ### Do you want to be the owner of this module?
+
+                Yes
+        then:
+          - assignTo:
+              author: true
+          - addReply:
+              reply: '@${issueAuthor}, thanks for volunteering to be a module owner! Please don't start the development just yet; wait for the AVM core team to review the proposal and respond to your first. Thank you!'
