@@ -108,83 +108,83 @@ configuration:
         then:
           - cleanEmailReply
 
-      - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
-        if:
-          - or:
-            - payloadType: Issues
-            - payloadType: Issue_Comment
-          - and:
-            - or:
-              - isAction:
-                  action: Opened
-              - isAction:
-                  action: Created
-              - isAction:
-                  action: Edited
-            - or:
-              - bodyContains:
-                  pattern: '+ Feature Request'
-              - commentContains:
-                  pattern: '+ Feature Request'
-        then:
-          - addLabel:
-              label: 'Type: Feature Request :heavy_plus_sign:'
-          - removeLabel:
-              label: 'Type: Bug :bug:'
-          - removeLabel:
-              label: 'Type: Security Bug :lock:'
+      # - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+      #   if:
+      #     - or:
+      #       - payloadType: Issues
+      #       - payloadType: Issue_Comment
+      #     - and:
+      #       - or:
+      #         - isAction:
+      #             action: Opened
+      #         - isAction:
+      #             action: Created
+      #         - isAction:
+      #             action: Edited
+      #       - or:
+      #         - bodyContains:
+      #             pattern: '+ Feature Request'
+      #         - commentContains:
+      #             pattern: '+ Feature Request'
+      #   then:
+      #     - addLabel:
+      #         label: 'Type: Feature Request :heavy_plus_sign:'
+      #     - removeLabel:
+      #         label: 'Type: Bug :bug:'
+      #     - removeLabel:
+      #         label: 'Type: Security Bug :lock:'
 
-      - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
-        if:
-          - or:
-            - payloadType: Issues
-            - payloadType: Issue_Comment
-          - and:
-            - or:
-              - isAction:
-                  action: Opened
-              - isAction:
-                  action: Created
-              - isAction:
-                  action: Edited
-            - or:
-              - bodyContains:
-                  pattern: '+ Bug'
-              - commentContains:
-                  pattern: '+ Bug'
-        then:
-          - addLabel:
-              label: 'Type: Bug :bug:'
-          - removeLabel:
-              label: 'Type: Feature Request :heavy_plus_sign:'
-          - removeLabel:
-              label: 'Type: Security Bug :lock:'
+      # - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
+      #   if:
+      #     - or:
+      #       - payloadType: Issues
+      #       - payloadType: Issue_Comment
+      #     - and:
+      #       - or:
+      #         - isAction:
+      #             action: Opened
+      #         - isAction:
+      #             action: Created
+      #         - isAction:
+      #             action: Edited
+      #       - or:
+      #         - bodyContains:
+      #             pattern: '+ Bug'
+      #         - commentContains:
+      #             pattern: '+ Bug'
+      #   then:
+      #     - addLabel:
+      #         label: 'Type: Bug :bug:'
+      #     - removeLabel:
+      #         label: 'Type: Feature Request :heavy_plus_sign:'
+      #     - removeLabel:
+      #         label: 'Type: Security Bug :lock:'
 
-      - description: 'TEST3 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
-        if:
-          - or:
-            - payloadType: Issues
-            - payloadType: Issue_Comment
-          - and:
-            - or:
-              - isAction:
-                  action: Opened
-              - isAction:
-                  action: Created
-              - isAction:
-                  action: Edited
-            - or:
-              - bodyContains:
-                  pattern: '+ Security Bug'
-              - commentContains:
-                  pattern: '+ Security Bug'
-        then:
-          - addLabel:
-              label: 'Type: Security Bug :lock:'
-          - removeLabel:
-              label: 'Type: Bug :bug:'
-          - removeLabel:
-              label: 'Type: Feature Request :heavy_plus_sign:'
+      # - description: 'TEST3 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
+      #   if:
+      #     - or:
+      #       - payloadType: Issues
+      #       - payloadType: Issue_Comment
+      #     - and:
+      #       - or:
+      #         - isAction:
+      #             action: Opened
+      #         - isAction:
+      #             action: Created
+      #         - isAction:
+      #             action: Edited
+      #       - or:
+      #         - bodyContains:
+      #             pattern: '+ Security Bug'
+      #         - commentContains:
+      #             pattern: '+ Security Bug'
+      #   then:
+      #     - addLabel:
+      #         label: 'Type: Security Bug :lock:'
+      #     - removeLabel:
+      #         label: 'Type: Bug :bug:'
+      #     - removeLabel:
+      #         label: 'Type: Feature Request :heavy_plus_sign:'
 
       - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'
         if:
@@ -339,3 +339,45 @@ configuration:
                 @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
                 
                 The AVM core team will review this module proposal and respond to you and/or the module owner first. Thank you!
+
+      - description: 'TEST1 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Feature Request
+        then:
+          - addLabel:
+              label: 'Type: Feature Request :heavy_plus_sign:'
+
+      - description: 'TEST2 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Bug
+        then:
+          - addLabel:
+              label: 'Type: Bug :bug:'
+
+      - description: 'TEST3 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Security Bug
+        then:
+          - addLabel:
+              label: 'Type: Security Bug :lock:'
