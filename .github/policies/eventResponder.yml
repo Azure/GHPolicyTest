@@ -188,28 +188,50 @@ configuration:
 
       - description: 'ITA13 - If the language is set to Bicep in the Module proposal, assign the "Language: Bicep :muscle:" label on the issue'
         if:
-          - payloadType: Issues
+          - or:
+            - payloadType: Issues
+            - payloadType: Issue_Comment
           - and:
-            - isAction:
-                action: Opened
-            - bodyContains:
-                pattern: '+ Bicep'
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited
+            - or:
+              - bodyContains:
+                  pattern: '* Bicep'
+              - commentContains:
+                  pattern: '* Bicep'
         then:
           - addLabel:
               label: 'Language: Bicep :muscle:'
-
+          - removeLabel:
+              label: 'Language: Terraform :globe_with_meridians:'  
       - description: 'ITA14 - If the language is set to Terraform in the Module proposal, assign the "Language: Terraform :globe_with_meridians:" label on the issue'
         if:
-          - payloadType: Issues
+          - or:
+            - payloadType: Issues
+            - payloadType: Issue_Comment
           - and:
-            - isAction:
-                action: Opened
-            - bodyContains:
-                pattern: '+ Terraform'
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited
+            - or:
+              - bodyContains:
+                  pattern: '* Terraform'
+              - commentContains:
+                  pattern: '* Terraform'
         then:
           - addLabel:
               label: 'Language: Terraform :globe_with_meridians:'
-
+          - removeLabel:
+              label: 'Language: Bicep :muscle:'              
       - description: 'ITA15 - remove the "Needs: Triage" label from a PR, if it already has a "Type: XYZ" label assigned at the time of creating it.'
         if:
           - payloadType: Pull_Request
