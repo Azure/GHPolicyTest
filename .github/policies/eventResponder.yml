@@ -492,25 +492,25 @@ configuration:
       #     - inPrLabel:
       #         label: 'Status: In PR :point_right:'
 
-      # - description: Sync labels with issues on all pull request events
-      #   if:
-      #     - or:
-      #         - payloadType: Pull_Request
-      #         - payloadType: Pull_Request_Review
-      #         - payloadType: Pull_Request_Review_Comment
-      #     - not:
-      #         isAction:
-      #           action: Closed
-      #   then:
-      #     - labelSync:
-      #         pattern: Needs
-      #     - labelSync:
-      #         pattern: Status
-      #     - labelSync:
-      #         pattern: Type
-      #     - labelSync:
-      #         pattern: Language
-      #     - labelSync:
-      #         pattern: Class
-      #     - inPrLabel:
-      #         label: 'Status: In PR :point_right:'
+      - description: Sync labels with issues on all pull request events
+        if:
+          - or:
+              - payloadType: Pull_Request
+              - payloadType: Pull_Request_Review
+              - payloadType: Pull_Request_Review_Comment
+          - not:
+              isAction:
+                action: Closed
+        then:
+          - labelSync:
+              pattern: Needs
+          - labelSync:
+              pattern: Status
+          - labelSync:
+              pattern: Type
+          - labelSync:
+              pattern: Language
+          - labelSync:
+              pattern: Class
+          - inPrLabel:
+              label: 'Status: In PR :point_right:'
