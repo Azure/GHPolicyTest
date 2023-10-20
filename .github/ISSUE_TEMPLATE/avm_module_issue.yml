@@ -8,26 +8,15 @@ body:
       value: |
         Thank you for your question/feedback!
 
-        > **NOTE**: If you'd like to propose a new AVM module, please follow the process [here](https://aka.ms/avm/moduleproposal).
-  - type: markdown
+        > **NOTE**: If you'd like to propose a new AVM module, please follow the process [here](https://aka.ms/AVM/ModuleProposal).
+  - type: checkboxes
+    id: existing-checks
     attributes:
-      value: |
-        Thank you for your question/feedback
-  # - type: checkboxes
-  #   id: existing-checks
-  #   attributes:
-  #     label: Check for previous/existing GitHub issues
-  #     description: By submitting this issue, you confirm that you have [searched for previous/existing GitHub issues](https://github.com/Azure/Azure-Verified-Modules/issues?q=is%3Aissue+sort%3Aupdated-desc+) to avoid creating a duplicate.
-  #     options:
-  #       - label: I have checked for previous/existing GitHub issues
-  #         required: true
-  # - type: textarea
-  #   id: question-feedback-text
-  #   attributes:
-  #     label: Description
-  #     description: Let us know your question or feedback here
-  #   validations:
-  #     required: true
+      label: Check for previous/existing GitHub issues
+      description: By submitting this issue, you confirm that you have [searched for previous/existing GitHub issues](https://aka.ms/BRM/TypeAVM) to avoid creating a duplicate.
+      options:
+        - label: I have checked for previous/existing GitHub issues
+          required: true
   - type: dropdown
     id: issue-type
     attributes:
@@ -38,5 +27,20 @@ body:
         - '+ Bug'
         - '+ Security Bug'
         - '+ I''m not sure'
+    validations:
+      required: true
+  - type: input
+    id: module-name
+    attributes:
+      label: Module Name
+      description: Which existing AVM module is this issue related to?
+      placeholder: avm-res-<rp>-<armresourcename>
+    validations:
+      required: true
+  - type: textarea
+    id: question-feedback-text
+    attributes:
+      label: Description
+      description: Please describe the issue!
     validations:
       required: true
