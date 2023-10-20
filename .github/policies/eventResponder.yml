@@ -338,4 +338,4 @@ configuration:
               reply: |
                 @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
                 
-                The AVM core team will review this module proposal and respond to the module owner first. Thank you!
+                The AVM core team will review this module proposal and respond to you and/or the module owner first. Thank you!
