@@ -492,7 +492,7 @@ configuration:
       #     - inPrLabel:
       #         label: 'Status: In PR :point_right:'
 
-      - description: Sync labels with issues on all pull request events
+      - description: 'Sync labels with issues on all pull request events'
         if:
           - or:
               - payloadType: Pull_Request
@@ -512,5 +512,5 @@ configuration:
               pattern: Language
           - labelSync:
               pattern: Class
-          - inPrLabel:
-              label: 'Status: In PR :point_right:'
+          # - inPrLabel:
+          #     label: 'Status: In PR :point_right:'
