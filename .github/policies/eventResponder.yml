@@ -9,20 +9,11 @@ configuration:
     eventResponderTasks:
       - description: ITA06 - If a new issue is opened add the needs triage label
         if:
-          - payloadType: Issues
-          - and:
-            - isAction:
-                action: Opened
-        then:
-          - addLabel:
-              label: 'Needs: Triage :mag:'
-
-      - description: ITA07 - If a new pull request is opened add the needs triage label
-        if:
-          - payloadType: Pull_Request
-          - and:
-            - isAction:
-                action: Opened
+          - or:
+            - payloadType: Issues
+            - payloadType: Pull_Request
+          - isAction:
+              action: Opened
         then:
           - addLabel:
               label: 'Needs: Triage :mag:'
