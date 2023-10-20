@@ -320,18 +320,18 @@ configuration:
           - payloadType: Issues
           - isAction:
               action: Opened
-          - bodyContains:
-              pattern: |
-                ### Do you want to be the owner of this module?
+          - and:
+            - bodyContains:
+                pattern: |
+                  ### Do you want to be the owner of this module?
 
-                No
-            -and:
-              -not:
-                - bodyContains:
-                    pattern: |
-                      ### Module Owner's GitHub Username (handle)
+                  No
+            -not:
+              - bodyContains:
+                  pattern: >-
+                    ### Module Owner's GitHub Username (handle)
 
-                      _No response_
+                    _No response_
         then:
           - addReply:
               reply: |
