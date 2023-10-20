@@ -327,11 +327,11 @@ configuration:
 
                   No
             - not:
-              bodyContains:
-                pattern: |
-                  ### Module Owner's GitHub Username (handle)
+                bodyContains:
+                  pattern: |
+                    ### Module Owner's GitHub Username (handle)
 
-                  _No response_
+                    _No response_
         then:
           - addLabel:
               label: 'Status: Owners Identified :metal:'
