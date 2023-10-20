@@ -328,13 +328,15 @@ configuration:
                   No
             -not:
               - bodyContains:
-                  pattern: >-
+                  pattern: |
                     ### Module Owner's GitHub Username (handle)
 
                     _No response_
         then:
-          - addReply:
-              reply: |
-                @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
+          - addLabel:
+              label: 'Status: Owners Identified :metal:'
+          # - addReply:
+          #     reply: |
+          #       @${issueAuthor}, thanks for submitting this module proposal with a module owner in mind! **Please don't start the development just yet!**
                 
-                The AVM core team will review this module proposal and respond to the module owner first. Thank you!
+          #       The AVM core team will review this module proposal and respond to the module owner first. Thank you!
