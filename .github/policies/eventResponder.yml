@@ -197,4 +197,4 @@ configuration:
               reply: |
                 @${issueAuthor}, thanks for submitting this module issue!
 
-                **A member of the @Azure/avm-core-team-module-admins or @Azure/avm-core-team-module-admins team will respond to you soon!**
+                A member of the @Azure/avm-core-team-module-admins or @Azure/avm-core-team-module-admins team will review it soon!
