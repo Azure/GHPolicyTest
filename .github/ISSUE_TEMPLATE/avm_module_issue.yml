@@ -35,7 +35,7 @@ body:
   - type: input
     id: module-name-other
     attributes:
-      label: [Optional] Module Name if not listed above
+      label: (Optional) Module Name if not listed above
       description: Which existing AVM module is this issue related to (if not listed above)?
       placeholder: avm-res-<rp>-<armresourcename>
     validations:
@@ -50,7 +50,7 @@ body:
   - type: input
     id: correlation-id
     attributes:
-      label: [Optional] Correlation Id
+      label: (Optional) Correlation Id
       description: Please provide a correlation id f available and appropriate.
     validations:
       required: false
