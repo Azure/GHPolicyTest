@@ -39,6 +39,11 @@ body:
       description: Which existing AVM module is this issue related to?
       options:
         - 'Other, as defined below...'
+        - 'avm-ptn-avd-lza-insights'
+        - 'avm-ptn-avd-lza-managementplane'
+        - 'avm-ptn-avd-lza-networking'
+        - 'avm-ptn-avd-lza-sessionhosts'
+        - 'avm-ptn-securitycenter'
         - 'avm-res-aad-domainservice'
         - 'avm-res-analysisservices-server'
         - 'avm-res-apimanagement-service'
@@ -181,6 +186,13 @@ body:
       label: (Optional) Module Name if not listed above
       description: Which existing AVM module is this issue related to (if not listed above)?
       placeholder: avm-res-<rp>-<armresourcename>
+    validations:
+      required: false
+  - type: input
+    id: module-version
+    attributes:
+      label: (Optional) Module Version
+      description: Please provide which version(s) of the module does this issue apply to.
     validations:
       required: false
   - type: textarea
