@@ -214,7 +214,7 @@ configuration:
               reply: |
                 @${issueAuthor}, thanks for submitting this issue for the `avm/res/aad/domain-service` module!
 
-                A member of the @azure/avm-res-aad-domainservice-module-owners-bicep or @azure/avm-res-aad-domainservice-module-contributors-bicep team will review it soon!
+                A member of the @Azure/avm-core-team-module-admins or @Azure/avm-core-team-module-admins team will review it soon!
 
       - description: "AVM-MOD-0002 - Send automatic response to the issue author and mention the module owners and contributors team"
         if:
