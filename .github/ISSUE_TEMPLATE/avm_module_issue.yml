@@ -187,7 +187,7 @@ body:
     attributes:
       label: (Optional) Module Name if not listed above
       description: Which existing AVM module is this issue related to (if not listed above)?
-      placeholder: avm/res/<dash separated resource provider>-<dash separated ARM resource name>
+      placeholder: avm/res/<resource provider>/<resource name>
     validations:
       required: false
   - type: input
