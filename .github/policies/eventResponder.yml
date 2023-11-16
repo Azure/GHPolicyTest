@@ -202,9 +202,8 @@ configuration:
       - description: "AVM-MOD-0001 - Send automatic response to the issue author and mention the module owners and contributors team"
         if:
           - payloadType: Issues
-          - not:
-              isAction:
-              action: Closed
+          - isAction:
+              action: Opened
           - bodyContains:
               pattern: |
                 avm/res/aad/domain-service
