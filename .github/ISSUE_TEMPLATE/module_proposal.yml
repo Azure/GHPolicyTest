@@ -53,8 +53,8 @@ body:
       label: Module Name
       description: |
         What would be the name of the module following the [naming pattern](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-rmnfr1---category-naming)?     
-        - Bicep: `avm/res/<resource provider>/<resource type (in singular form)>`; e.g., `avm/res/virtual-machine-images/image-template`
-        - Terraform: `avm-res-<resource provider>-<resource type (in singular form)>`; e.g., `avm-res-virtualmachineimages-imagetemplate`
+        - Bicep: `avm/res/<resource provider - dash separated>/<resource type - dash separated (in singular form)>`; e.g., `avm/res/virtual-machine-images/image-template`
+        - Terraform: `avm-res-<resource provider in one word>-<resource type in one word (in singular form)>`; e.g., `avm-res-virtualmachineimages-imagetemplate`
       placeholder: '<Module name as per above naming convention>'
     validations:
       required: true
