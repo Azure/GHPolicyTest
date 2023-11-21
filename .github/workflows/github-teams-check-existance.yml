@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: compare
+        id: compare
+        shell: pwsh
         run: |
           # Get the Bicep CSV file from the AVM Repo
           $unfilteredBicepCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/bicep/res/csv"
