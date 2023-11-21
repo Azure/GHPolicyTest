@@ -55,7 +55,7 @@ body:
         What would be the name of the module following the [naming pattern](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-rmnfr1---category-naming)?     
         - Bicep: `avm/res/<rp (hyphenated)>/<resource type (hyphenated, singular form)>`; e.g., `avm/res/virtual-machine-images/image-template`
         - Terraform: `avm-res-<rp (single word)>-<resource type (single word, singular form)>`; e.g., `avm-res-virtualmachineimages-imagetemplate`
-      placeholder: '<Module name as per above naming convention>'
+      placeholder: '<Module name>'
     validations:
       required: true
   - type: textarea
