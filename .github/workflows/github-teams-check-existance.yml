@@ -140,9 +140,7 @@ jobs:
                   [string]$TeamFilter
               )
               # use githubCLI to get all teams in Azure organization
-              gh config set prompt disabled
-              gh auth login --with-token ${{ env.GITHUB_TOKEN }}
-              gh auth status
+
               $rawGhTeams = gh api orgs/Azure/teams --paginate
               
               # Convert JSON to PowerShell Object
@@ -241,6 +239,8 @@ jobs:
                   }
               }
           }
+          gh config set prompt disabled
+          gh auth status
           Compare-BicepOwnersTeams
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
