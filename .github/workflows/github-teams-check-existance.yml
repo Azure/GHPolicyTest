@@ -234,5 +234,6 @@ jobs:
                   }
               }
           }
+          Compare-BicepOwnersTeams
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
