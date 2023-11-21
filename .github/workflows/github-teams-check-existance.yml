@@ -1,0 +1,52 @@
+# Workflow for syncing CSV labels to GitHub Labels
+name: Github Team - Check Existance
+
+on:
+  # Runs on pushes targeting the default branch
+  issues: {}
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: {}
+
+jobs:
+  Check-Team-Existance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: compare
+        run: |
+          # Get the Bicep CSV file from the AVM Repo
+          $unfilteredBicepCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/bicep/res/csv"
+          $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredBicepCSV.Content
+          $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object {$_.ModuleStatus -eq 'Module Available :green_circle:'}
+          Write-Host "Available Modules will be written to var filterCsvAvailableBicepModule" -foregroundColor Cyan
+          $filterAvailableModuleOwers = $filterCsvAvailableBicepModule.ModuleOwnersGHTeam
+          $formattedModuleOwnerSlug = $filterAvailableModuleOwers -replace('@Azure/','')
+
+          # Get GitHub Teams from Org
+          $rawGhTeams = gh api orgs/Azure/teams --paginate
+          $formattedGhTeams = ConvertFrom-Json $rawGhTeams
+
+          # Filter Teams for AVM
+          $filterAvmGhTeams = $formattedGhTeams | Where-Object {$_.name -like 'avm-*'}
+          # Filter Teams for AVM Resource Modules
+          $filterAvmResGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*res-*'}
+          # Filter Teams for AVM Pattern Modules
+          $filterAvmPtnGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*ptn-*'}
+
+          # Filter AVM Module Teams for Bicep
+          $filterAvmBicepGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*bicep'}
+          # Filter AVM Module Teams for Bicep Resource Modules
+          $filterAvmBicepResGhTeams = $filterAvmBicepGhTeams | Where-Object {$_.name -like '*res-*'}
+          $filterAvmBicepResGhTeamsOwners = $filterAvmBicepResGhTeams | Where-Object {$_.name -like '*owners-*'}
+          # Filter AVM Module Teams for Bicep Pattern Modules
+          $filterAvmBicepPtnGhTeams = $filterAvmBicepGhTeams | Where-Object {$_.name -like '*ptn-*'}
+
+          # Filter AVM Module Teams for Terraform
+          $filterAvmTfGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*tf'}
+          # Filter AVM Module Teams for Terraform Resource Modules
+          $filterAvmTfResGhTeams = $filterAvmTfGhTeams | Where-Object {$_.name -like '*res-*'}
+          # Filter AVM Module Teams for Terraform Pattern Modules
+          $filterAvmTfPtnGhTeams = $filterAvmTfGhTeams | Where-Object {$_.name -like '*ptn-*'}
+          write-output $filterAvmBicepResGhTeamsOwners
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
