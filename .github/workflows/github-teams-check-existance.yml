@@ -189,6 +189,8 @@ jobs:
 
               $ghTeamData = Get-GitHubTeams -TeamFilter AllBicepResourceOwners
 
+              $ErrorActionPreference = 'Continue'
+              
               # Iterate through each object in $csv
               foreach ($module in $csvdata) {
                   # Assume no match is found initially
@@ -217,6 +219,8 @@ jobs:
 
               $ghTeamData = Get-GitHubTeams -TeamFilter AllTerraformResourceOwners
 
+              $ErrorActionPreference = 'Continue'
+              
               # Iterate through each object in $csv
               foreach ($module in $csvdata) {
                   # Assume no match is found initially
