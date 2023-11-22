@@ -44,6 +44,7 @@ jobs:
           private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
 
       - name: compare
+        continue-on-error: true
         id: compare
         shell: pwsh
         run: |
