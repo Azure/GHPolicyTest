@@ -45,7 +45,7 @@ jobs:
 
       - name: "Compare Bicep Resource Teams"
         continue-on-error: true
-        id: comparebcp
+        id: comparebcpowner
         shell: pwsh
         run: |
           # Group Task Logs
@@ -56,7 +56,34 @@ jobs:
 
           $functionInput = @{
             ModuleIndex           = 'Bicep-Resource'
-            TeamFilter            = 'AllBicepResource'
+            TeamFilter            = 'BicepResourceOwners'
+            validateOwnersParent  = $true
+          }
+
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Compare-AvmTeams @functionInput -Verbose -ErrorAction Continue
+
+          # End Group Task Logs
+          Write-Output '::endgroup::'
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
+      - name: "Compare Bicep Resource Teams"
+        continue-on-error: true
+        id: comparebcpcontrib
+        shell: pwsh
+        run: |
+          # Group Task Logs
+          Write-Output '::group::Compare AVM Bicep Team Configuration'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
+
+          $functionInput = @{
+            ModuleIndex           = 'Bicep-Resource'
+            TeamFilter            = 'BicepResourceContributors'
             validateOwnersParent  = $true
           }
 
