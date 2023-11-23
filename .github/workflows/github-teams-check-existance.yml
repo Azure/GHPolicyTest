@@ -43,207 +43,29 @@ jobs:
           app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
           private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
 
-      - name: compare
+      - name: "Compare Bicep Resource Teams"
         continue-on-error: true
         id: compare
         shell: pwsh
         run: |
-          Function Get-AvmCsv {
-              [CmdletBinding()]
-              param (
-                  [Parameter(Mandatory)]
-                  [ValidateSet('Bicep-Resource','Bicep-Pattern', 'Terraform-Resource','Terraform-Pattern')]
-                  [string]$ModuleIndex
-              )
+          # Group Task Logs
+          Write-Output'::group::Compare AVM Team Configuration
 
-              # Retrieve the CSV file
-              if ($ModuleIndex -eq 'Bicep-Resource') {
-                  try {
-                      $unfilteredCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/bicep/res/csv"   
-                  }
-                  catch {
-                      Write-Error "Unable to retrieve CSV file - Check network connection."
-                  }
-              }
-              elseif ($ModuleIndex -eq 'Bicep-Pattern') {
-                  try {
-                      $unfilteredCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/bicep/ptn/csv"
-                  }
-                  catch {
-                      Write-Error "Unable to retrieve CSV file - Check network connection."
-                  }
-              }
-              elseif ($ModuleIndex -eq 'Terraform-Resource') {
-                  try {
-                      $unfilteredCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/tf/res/csv"
-                  }
-                  catch {
-                      Write-Error "Unable to retrieve CSV file - Check network connection."
-                  }
-              }
-              elseif ($ModuleIndex -eq 'Terraform-Pattern') {
-                  try {
-                      $unfilteredCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/tf/ptn/csv"
-                  }
-                  catch {
-                      Write-Error "Unable to retrieve CSV file - Check network connection."
-                  }
-              }
-              else {
-                  Write-Error "Invalid ModuleIndex value"
-                  exit 1
-              }
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
-              # Convert the CSV content to a PowerShell object
-              $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredCSV.Content
-              # Filter the CSV data where the ModuleStatus is 'Module Available :green_circle:'
-              $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object {$_.ModuleStatus -eq 'Module Available :green_circle:'}
-              
-              # Loop through each item in the filtered data
-              foreach ($item in $filterCsvAvailableBicepModule) {
-                  # Remove '@Azure/' from the ModuleOwnersGHTeam property
-                  $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
-                  # Remove '@Azure/' from the ModuleContributorsGHTeam property
-                  $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
-              }
-
-              # Return the filtered and modified data
-              return $filterCsvAvailableBicepModule
+          $functionInput = @{
+            ModuleIndex           = 'Bicep-Resource'
+            TeamFilter            = 'AllBicepResource'
+            validateOwnersParent  = $true
           }
 
-          Function Get-AvmResTfCsv {
-              # Retrieve the CSV file
-              $unfilteredBicepCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/tf/res/csv"
-              # Convert the CSV content to a PowerShell object
-              $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredBicepCSV.Content
-              # Filter the CSV data where the ModuleStatus is 'Module Available :green_circle:'
-              $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object {$_.ModuleStatus -eq 'Module Available :green_circle:'}
-              
-              # Loop through each item in the filtered data
-              foreach ($item in $filterCsvAvailableBicepModule) {
-                  # Remove '@Azure/' from the ModuleOwnersGHTeam property
-                  $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
-                  # Remove '@Azure/' from the ModuleContributorsGHTeam property
-                  $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
-              }
+          Write-Verbose 'Invoke task with' -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-              # Return the filtered and modified data
-              return $filterCsvAvailableBicepModule
-          }
+          Compare-AvmTeams @functionInput -Verbose
 
-          Function Get-GitHubTeams {
-              [CmdletBinding()]
-              param (
-                  [Parameter(Mandatory)]
-                  [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'AllBicepResourceOwners', 'AllBicepPattern', 'AllTerraform', 'AllTerraformResource','AllTerraformResourceOwners', 'AllTeraformPattern' )]
-                  [string]$TeamFilter
-              )
-              # use githubCLI to get all teams in Azure organization
-
-              $rawGhTeams = gh api orgs/Azure/teams --paginate
-              
-              # Convert JSON to PowerShell Object
-              $formattedGhTeams = ConvertFrom-Json $rawGhTeams
-              
-              # Filter Teams for AVM
-              $filterAvmGhTeams = $formattedGhTeams | Where-Object {$_.name -like 'avm-*'}    
-              # Filter Teams for AVM Resource Modules
-              $filterAvmResGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*res-*'}
-              # Filter Teams for AVM Pattern Modules
-              $filterAvmPtnGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*ptn-*'}
-              # Filter AVM Module Teams for Bicep
-              $filterAvmBicepGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*bicep'}
-              # Filter AVM Module Teams for Bicep Resource Modules
-              $filterAvmBicepResGhTeams = $filterAvmBicepGhTeams | Where-Object {$_.name -like '*res-*'}
-              # Filter AVM Module Teams for Bicep Resource Modules Owners
-              $filterAvmBicepResGhTeamsOwners = $filterAvmBicepResGhTeams | Where-Object {$_.name -like '*owners-*'}
-              # Filter AVM Module Teams for Bicep Pattern Modules
-              $filterAvmBicepPtnGhTeams = $filterAvmBicepGhTeams | Where-Object {$_.name -like '*ptn-*'}
-              # Filter AVM Module Teams for Terraform
-              $filterAvmTfGhTeams = $filterAvmGhTeams | Where-Object {$_.name -like '*tf'}
-              # Filter AVM Module Teams for Terraform Resource Modules
-              $filterAvmTfResGhTeams = $filterAvmTfGhTeams | Where-Object {$_.name -like '*res-*'}
-              # Filter AVM Module Teams for Terraform Resource Modules Owners
-              $filterAvmTfResGhTeamsOwners = $filterAvmTfResGhTeams | Where-Object {$_.name -like '*owners-*'}
-              # Filter AVM Module Teams for Terraform Pattern Modules
-              $filterAvmTfPtnGhTeams = $filterAvmTfGhTeams | Where-Object {$_.name -like '*ptn-*'}
-
-              switch ($TeamFilter) {
-                  'AllTeams' { return $filterAvmGhTeams }
-                  'AllResource' { return $filterAvmResGhTeams }
-                  'AllPattern' { return $filterAvmPtnGhTeams }
-                  'AllBicep' { return $filterAvmBicepGhTeams }
-                  'AllBicepResourceOwners' { return $filterAvmBicepResGhTeamsOwners }
-                  'AllBicepResource' { return $filterAvmBicepResGhTeams }
-                  'AllBicepPattern' { return $filterAvmBicepPtnGhTeams }
-                  'AllTerraform' { return $filterAvmTfGhTeams }
-                  'AllTerraformResource' { return $filterAvmTfResGhTeams }
-                  'AllTerraformResourceOwners' { return $filterAvmTfResGhTeamsOwners }
-                  'AllTeraformPattern' { return $filterAvmTfPtnGhTeams }
-              }
-          }
-
-          Function Compare-BicepOwnersTeams {
-
-              $csvdata = Get-AvmCsv -ModuleIndex Bicep-Resource
-
-              $ghTeamData = Get-GitHubTeams -TeamFilter AllBicepResourceOwners
-
-              $ErrorActionPreference = 'Continue'
-              
-              # Iterate through each object in $csv
-              foreach ($module in $csvdata) {
-                  # Assume no match is found initially
-                  $matchFound = $false
-
-                  # Check each object in $ghTeam for a match
-                  foreach ($ghTeam in $ghTeamData) {
-                      if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
-                          # If a match is found, set flag to true and break out of the loop
-                          $matchFound = $true
-                          Write-Output "Match found for: $($module.ModuleOwnersGHTeam)"
-                          break
-                      }
-                  }
-
-                  # If no match was found, output the item from $csv
-                  if (-not $matchFound) {
-                      Write-Error "No match found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle)"
-                  }
-              }
-          }
-
-          Function Compare-TerraformOwnersTeams {
-
-              $csvdata = Get-AvmCsv Terraform-Resource
-
-              $ghTeamData = Get-GitHubTeams -TeamFilter AllTerraformResourceOwners
-
-              $ErrorActionPreference = 'Continue'
-              
-              # Iterate through each object in $csv
-              foreach ($module in $csvdata) {
-                  # Assume no match is found initially
-                  $matchFound = $false
-
-                  # Check each object in $ghTeam for a match
-                  foreach ($ghTeam in $ghTeamData) {
-                      if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
-                          # If a match is found, set flag to true and break out of the loop
-                          $matchFound = $true
-                          Write-Output "Match found for: $($module.ModuleOwnersGHTeam)"
-                          break
-                      }
-                  }
-
-                  # If no match was found, output the item from $csv
-                  if (-not $matchFound) {
-                      Write-Error "No match found for: $($module.ModuleOwnersGHTeam), Current Owner in $($module.PrimaryModuleOwnerGHHandle)"
-                  }
-              }
-          }
-          gh config set prompt disabled
-          gh auth status
-          Compare-BicepOwnersTeams
+          # End Group Task Logs
+          Write-Output '::endgroup::'          
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
