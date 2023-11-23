@@ -42,15 +42,27 @@ Function Compare-AvmTeams {
                 if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
                     # If a match is found, set flag to true and break out of the loop
                     $matchFound = $true
-                    Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName)), Checking for parent team..."
-                    if (-not $null -eq $ghTeam.parent -And $validateOwnersParent) {
-                        Write-Verbose "Found parent team: $($ghTeam.parent.name) for $($module.ModuleOwnersGHTeam)"
+
+                    # Validate if Parent Team is configured for Owners Team
+                    if ($validateOwnersParent) {
+                        # Check if Parent Team is configured for Owners Team
+                        if (-not $null -eq $ghTeam.parent -And $validateOwnersParent) {
+                            Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
+                            break
+                        }
+                        else {
+                            Write-Error "Uh-oh no parent team configured for $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                            break
+                        }
                     }
                     else {
-                        Write-Error "Uh-oh no parent team configured for $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                        # Write verbose output without parent check
+                        Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                        break
                     }
-                    break
                 }
+
+
                 # Check for match with "@Azure/" prefix
                 # Construct the prefixed team name
                 $prefixedTeamName = "@azure/" + $module.ModuleOwnersGHTeam
@@ -68,21 +80,31 @@ Function Compare-AvmTeams {
                 Write-Error "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
             }
         }
+
         if ($validateContributors -Or $validateAll) {
             # Check each object in $ghTeam for a match
             foreach ($ghTeam in $gitHubTeamsData) {
                 if ($module.ModuleContributorsGHTeam -eq $ghTeam.name) {
                     # If a match is found, set flag to true and break out of the loop
                     $matchFound = $true
-                    Write-Verbose "Match found for: $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
-                    if (-not $null -eq $ghTeam.parent -And $validateContributorsParent) {
-                        Write-Verbose "Match found for: $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName)) ; Parent team is $($ghTeam.parent.name)"
+                    
+                    # Validate if Parent Team is configured for Contributors Team
+                    if ($validateContributorsParent) {
+                        # Check if Parent Team is configured for Contributors Team
+                        if (-not $null -eq $ghTeam.parent -And $validateContributorsParent) {
+                            Write-Verbose "Found team: $($module.ModuleContributorsGHTeam)  with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
+                            break
+                        }
+                        else {
+                            Write-Error "Uh-oh no parent team configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                        }
                     }
                     else {
-                        Write-Error "Uh-oh no parent team configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                        Write-Verbose "Found team: $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
                     }
                     break
                 }
+                
                 # Check for match with "@Azure/" prefix
                 # Construct the prefixed team name
                 $prefixedTeamName = "@azure/" + $module.ModuleContributorsGHTeam
