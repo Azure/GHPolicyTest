@@ -49,7 +49,7 @@ jobs:
         shell: pwsh
         run: |
           # Group Task Logs
-          Write-Output'::group::Compare AVM Team Configuration'
+          Write-Output '::group::Compare AVM Team Configuration'
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
