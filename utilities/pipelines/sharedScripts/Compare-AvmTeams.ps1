@@ -192,5 +192,6 @@ Function Compare-AvmTeams {
         #Output in JSON for follow on tasks
         Write-Error "Unmatched teams found: $($jsonOutput)"
         $LASTEXITCODE = 1
+        return $jsonOutput
     } 
 }
