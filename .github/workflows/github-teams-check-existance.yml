@@ -59,12 +59,13 @@ jobs:
             ModuleIndex           = 'Bicep-Resource'
             TeamFilter            = 'BicepResourceOwners'
             validateOwnersParent  = $true
+
           }
 
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          $teamsOutput = Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose 
 
           # End Group Task Logs
           Write-Output '::endgroup::'
@@ -86,6 +87,7 @@ jobs:
             ModuleIndex           = 'Bicep-Resource'
             TeamFilter            = 'BicepResourceContributors'
             validateOwnersParent  = $true
+            createIssues          = $true
           }
 
           Write-Verbose 'Invoke task with' -Verbose

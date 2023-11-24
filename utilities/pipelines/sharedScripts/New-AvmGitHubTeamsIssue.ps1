@@ -1,4 +1,4 @@
-function New-AVMGitHubIssue {
+function New-AVMGitHubTeamsIssue {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -7,11 +7,11 @@ function New-AVMGitHubIssue {
         [string]$assignee,
         [Parameter(Mandatory)]
         [string]$body,
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory=$false)]
         [string]$labels
     )
     
-    gh auth status
+    gh auth status  
     if ($? -eq $false) {
         Write-Error "You are not authenticated to GitHub. Please run 'gh auth login' to authenticate."
         exit 1

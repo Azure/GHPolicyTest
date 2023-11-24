@@ -9,12 +9,14 @@ Function Compare-AvmTeams {
         [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
         [string]$TeamFilter,
         [switch]$validateOwnersParent,
-        [switch]$validateContributorsParent
+        [switch]$validateContributorsParent,
+        [switch]$createIssues
     )
 
     # Load used functions
     . (Join-Path $PSScriptRoot 'Get-AvmCsvData.ps1')
     . (Join-Path $PSScriptRoot 'Get-AvmGitHubTeamsData.ps1')
+    . (Join-Path $PSScriptRoot 'Set-AvmGitHubTeamsIssue.ps1')
 
     if ($TeamFilter -like '*All*') {
         $validateAll = $true
@@ -186,6 +188,17 @@ Function Compare-AvmTeams {
         $jsonOutput = $unmatchedTeams | ConvertTo-Json -Depth 3
         Write-Warning "Unmatched teams found:"
         Write-Warning $jsonOutput | Out-String
+
+        if ($createIssues){
+            foreach ($unmatchedTeam in $unmatchedTeams) {
+                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner "ChrisSidebotham" -ValidationError $unmatchedTeam.Validation -CreateIssues:$true -Verbose
+            }
+        }
+        else {
+            foreach ($unmatchedTeam in $unmatchedTeams) {
+                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner "ChrisSidebotham" -ValidationError $unmatchedTeam.Validation -CreateIssues:$false -Verbose
+            }
+        }
 
         #Output in JSON for follow on tasks
         Write-Error "Unmatched teams found, Review warnings for details."

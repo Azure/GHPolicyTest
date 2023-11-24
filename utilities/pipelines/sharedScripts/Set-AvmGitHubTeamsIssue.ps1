@@ -1,4 +1,4 @@
-function Set-AvmTeamGitHubIssue {
+function Set-AvmGitHubTeamsIssue {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -30,10 +30,12 @@ function Set-AvmTeamGitHubIssue {
         }
         catch {
             Write-Error "Unable to create issue. Check network connection."
+            return $Error
         }
     }
     elseif ([string]::IsNullOrEmpty($issues) -And -not $CreateIssues) {
-        Write-Verbose "New issue would be created for: $($title) with $($body)"
+        Write-Verbose "New issue should be created for: $($title) with $($body)"
+        Write-Verbose "Issue not created due to -CreateIssues switch not being used. (Check Branch)"
     }
     else {
         Write-Output "Issue found for: $($title)"
