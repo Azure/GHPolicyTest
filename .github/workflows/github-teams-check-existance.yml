@@ -3,7 +3,8 @@ name: Github Team - Check Existance
 
 on:
   # Runs on pushes targeting the default branch
-  issues: {}
+  schedule:
+    - cron: "0 10 * * 1-5" # At 10:00 AM, Monday through Friday
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: {}
@@ -63,7 +64,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          $teamsOutput = Compare-AvmTeams @functionInput -Verbose 
 
           # End Group Task Logs
           Write-Output '::endgroup::'

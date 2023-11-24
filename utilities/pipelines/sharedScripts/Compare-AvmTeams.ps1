@@ -10,8 +10,6 @@ Function Compare-AvmTeams {
         [string]$TeamFilter,
         [switch]$validateOwnersParent,
         [switch]$validateContributorsParent
-        # [switch]$validateContributors,
-        # [switch]$validateAll
     )
 
     # Load used functions
