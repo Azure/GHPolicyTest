@@ -126,7 +126,7 @@ Function Compare-AvmTeams {
                             Write-Verbose "Uh-oh no parent team configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
                             # Create a custom object for the unmatched team
                             $unmatchedTeam = [PSCustomObject]@{
-                                TeamName       = $module.ModuleOwnersGHTeam
+                                TeamName       = $module.ModuleContributorsGHTeam
                                 Validation     = "No parent team assigned."
                                 Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                                 GitHubTeamName = $ghTeam.name
@@ -150,7 +150,7 @@ Function Compare-AvmTeams {
                     $matchFound = $true
                     Write-Verbose "Uh-oh team found with '@azure/' prefix for: $($ghTeam.name), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                     $unmatchedTeam = [PSCustomObject]@{
-                        TeamName       = $module.ModuleOwnersGHTeam
+                        TeamName       = $module.ModuleContributorsGHTeam
                         Validation     = "@azure/ prefix found."
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = $ghTeam.name
@@ -166,9 +166,9 @@ Function Compare-AvmTeams {
             if (-not $matchFound) {
                 Write-Verbose "No team found for: $($module.ModuleContributorsGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                 if (-not $matchFound) {
-                    Write-Verbose "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    Write-Verbose "No team found for: $($module.ModuleContributorsGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                     $unmatchedTeam = [PSCustomObject]@{
-                        TeamName       = $module.ModuleOwnersGHTeam
+                        TeamName       = $module.ModuleContributorsGHTeam
                         Validation     = "No team found."
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = "N/A"
@@ -185,8 +185,12 @@ Function Compare-AvmTeams {
         $LASTEXITCODE = 0
     } 
     else {
-        Write-Error "Unmatched teams found:"
+        $jsonOutput = $unmatchedTeams | ConvertTo-Json -Depth 3
+        Write-Output "Unmatched teams found:"
+        Write-Output $unmatchedTeams | Format-Table -AutoSize
+
+        #Output in JSON for follow on tasks
+        Write-Error "Unmatched teams found: $($jsonOutput)"
         $LASTEXITCODE = 1
-        return $unmatchedTeams
     } 
 }

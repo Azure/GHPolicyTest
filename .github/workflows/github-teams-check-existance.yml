@@ -43,7 +43,7 @@ jobs:
           app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
           private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
 
-      - name: "Compare Bicep Resource Teams"
+      - name: "Compare Bicep Owners Resource Teams"
         if: always()
         id: comparebcpowner
         shell: pwsh
@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
       
-      - name: "Compare Bicep Resource Teams"
+      - name: "Compare Bicep Contributor Resource Teams"
         if: always()
         id: comparebcpcontrib
         shell: pwsh
