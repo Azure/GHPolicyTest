@@ -63,7 +63,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose -ErrorAction Continue
+          Compare-AvmTeams @functionInput -Verbose 
 
           # End Group Task Logs
           Write-Output '::endgroup::'
@@ -90,7 +90,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose -ErrorAction Continue
+          Compare-AvmTeams @functionInput -Verbose 
 
           # End Group Task Logs
           Write-Output '::endgroup::'
@@ -117,7 +117,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose -ErrorAction Continue
+          Compare-AvmTeams @functionInput -Verbose 
 
           # End Group Task Logs
           Write-Output '::endgroup::'
