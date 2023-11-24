@@ -187,7 +187,7 @@ Function Compare-AvmTeams {
     else {
         $jsonOutput = $unmatchedTeams | ConvertTo-Json -Depth 3
         Write-Output "Unmatched teams found:"
-        Write-Output $unmatchedTeams | Format-Table -AutoSize
+        Write-Output $unmatchedTeams | Format-List
 
         #Output in JSON for follow on tasks
         Write-Error "Unmatched teams found: $($jsonOutput)"
