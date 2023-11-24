@@ -186,11 +186,11 @@ Function Compare-AvmTeams {
     } 
     else {
         $jsonOutput = $unmatchedTeams | ConvertTo-Json -Depth 3
-        Write-Output "Unmatched teams found:"
-        Write-Output $unmatchedTeams | Format-List
+        Write-Warning "Unmatched teams found:"
+        Write-Warning $unmatchedTeams | Format-List
 
         #Output in JSON for follow on tasks
-        Write-Error "Unmatched teams found: $($jsonOutput)"
+        Write-Error "Unmatched teams found, Review warnings for details."
         $LASTEXITCODE = 1
         return $jsonOutput
     } 
