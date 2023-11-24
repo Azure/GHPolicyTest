@@ -32,6 +32,7 @@ Function Compare-AvmTeams {
     # Retrieve the CSV file
     $sourceData = Get-AvmCsv -ModuleIndex $ModuleIndex
     $gitHubTeamsData = Get-GitHubTeams -TeamFilter $TeamFilter
+    $unmatchedTeams = @()
     # Iterate through each object in $csv
     foreach ($module in $sourceData) {
         # Assume no match is found initially
@@ -51,7 +52,16 @@ Function Compare-AvmTeams {
                             break
                         }
                         else {
-                            Write-Error "Uh-oh no parent team configured for $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                            Write-Verbose "Uh-oh no parent team configured for $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                            # Create a custom object for the unmatched team
+                            $unmatchedTeam = [PSCustomObject]@{
+                                TeamName       = $module.ModuleOwnersGHTeam
+                                Validation     = "No parent team assigned."
+                                Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                GitHubTeamName = $ghTeam.name
+                            }
+                            # Add the custom object to the array
+                            $unmatchedTeams += $unmatchedTeam
                             break
                         }
                     }
@@ -70,14 +80,31 @@ Function Compare-AvmTeams {
                 # Check for match with "@Azure/" prefix
                 if ($prefixedTeamName -eq $ghTeam.name) {
                     $matchFound = $true
-                    Write-Error "Uh-oh team found with '@azure/' prefix for: $($ghTeam.name), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    Write-Verbose "Uh-oh team found with '@azure/' prefix for: $($ghTeam.name), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    $unmatchedTeam = [PSCustomObject]@{
+                        TeamName       = $module.ModuleOwnersGHTeam
+                        Validation     = "@azure/ prefix found."
+                        Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                        GitHubTeamName = $ghTeam.name
+                        
+                    }
+                    # Add the custom object to the array
+                    $unmatchedTeams += $unmatchedTeam
                     break
                 }
             }
 
             # If no match was found, output the item from $csv
             if (-not $matchFound) {
-                Write-Error "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                Write-Verbose "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                $unmatchedTeam = [PSCustomObject]@{
+                    TeamName       = $module.ModuleOwnersGHTeam
+                    Validation     = "No team found."
+                    Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    GitHubTeamName = "N/A"
+                }
+                # Add the custom object to the array
+                $unmatchedTeams += $unmatchedTeam
             }
         }
 
@@ -96,7 +123,16 @@ Function Compare-AvmTeams {
                             break
                         }
                         else {
-                            Write-Error "Uh-oh no parent team configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                            Write-Verbose "Uh-oh no parent team configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                            # Create a custom object for the unmatched team
+                            $unmatchedTeam = [PSCustomObject]@{
+                                TeamName       = $module.ModuleOwnersGHTeam
+                                Validation     = "No parent team assigned."
+                                Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                GitHubTeamName = $ghTeam.name
+                            }
+                            # Add the custom object to the array
+                            $unmatchedTeams += $unmatchedTeam
                         }
                     }
                     else {
@@ -112,15 +148,45 @@ Function Compare-AvmTeams {
                 # Check for match with "@Azure/" prefix
                 if ($prefixedTeamName -eq $ghTeam.name) {
                     $matchFound = $true
-                    Write-Error "Uh-oh team found with '@azure/' prefix for: $($ghTeam.name), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    Write-Verbose "Uh-oh team found with '@azure/' prefix for: $($ghTeam.name), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    $unmatchedTeam = [PSCustomObject]@{
+                        TeamName       = $module.ModuleOwnersGHTeam
+                        Validation     = "@azure/ prefix found."
+                        Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                        GitHubTeamName = $ghTeam.name
+                    }
+                    # Add the custom object to the array
+                    $unmatchedTeams += $unmatchedTeam
+                    break
                     break
                 }
             }
 
             # If no match was found, output the item from $csv
             if (-not $matchFound) {
-                Write-Error "No team found for: $($module.ModuleContributorsGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                Write-Verbose "No team found for: $($module.ModuleContributorsGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                if (-not $matchFound) {
+                    Write-Verbose "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                    $unmatchedTeam = [PSCustomObject]@{
+                        TeamName       = $module.ModuleOwnersGHTeam
+                        Validation     = "No team found."
+                        Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                        GitHubTeamName = "N/A"
+                    }
+                    # Add the custom object to the array
+                    $unmatchedTeams += $unmatchedTeam
+                }
             }
         }
     }
+    # Check if $unmatchedTeams is empty
+    if ($unmatchedTeams.Count -eq 0) {
+        Write-Host "No unmatched teams found."
+        $LASTEXITCODE = 0
+    } 
+    else {
+        Write-Error "Unmatched teams found:"
+        $LASTEXITCODE = 1
+        return $unmatchedTeams
+    } 
 }

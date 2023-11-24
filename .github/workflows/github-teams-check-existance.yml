@@ -44,7 +44,7 @@ jobs:
           private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
 
       - name: "Compare Bicep Resource Teams"
-        continue-on-error: true
+        if: always()
         id: comparebcpowner
         shell: pwsh
         run: |
@@ -71,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
       
       - name: "Compare Bicep Resource Teams"
-        continue-on-error: true
+        if: always()
         id: comparebcpcontrib
         shell: pwsh
         run: |
@@ -98,7 +98,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: "Compare Terraform Resource Teams"
-        continue-on-error: true
+        if: always()
         id: comparetf
         shell: pwsh
         run: |
