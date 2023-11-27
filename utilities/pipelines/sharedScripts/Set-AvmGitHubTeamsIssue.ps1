@@ -1,3 +1,33 @@
+<#
+.SYNOPSIS
+    Checks if a GitHub issue exists for a given team. If not, creates a new issue.
+
+.DESCRIPTION
+    Checks if a GitHub issue exists for a given team. If not, creates a new issue.
+
+.PARAMETER TeamName
+    The name of the team to check.
+
+.PARAMETER Owner
+    The owner of the team to check.
+
+.PARAMETER ValidationError
+    The validation error to add to the issue.
+
+.PARAMETER CreateIssues
+    Switch to create issues if they do not exist.
+
+.EXAMPLE
+    Set-AvmGitHubTeamsIssue -TeamName 'MyTeam' -Owner 'MyOwner' -ValidationError 'MyValidationError' -CreateIssues
+
+    Checks if an issue exists for the team 'MyTeam' with the owner 'MyOwner'. If not, creates a new issue with the validation error 'MyValidationError'.
+
+.EXAMPLE
+    Set-AvmGitHubTeamsIssue -TeamName 'MyTeam' -Owner 'MyOwner' -ValidationError 'MyValidationError'
+
+    Checks if an issue exists for the team 'MyTeam' with the owner 'MyOwner'. If not, does not create a new issue.
+#>
+
 function Set-AvmGitHubTeamsIssue {
     [CmdletBinding()]
     param (

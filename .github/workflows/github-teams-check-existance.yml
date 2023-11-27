@@ -58,7 +58,7 @@ jobs:
           $functionInput = @{
             ModuleIndex           = 'Bicep-Resource'
             TeamFilter            = 'BicepResourceOwners'
-            validateOwnersParent  = $true
+            ValidateOwnersParent  = $true
 
           }
 
@@ -86,8 +86,8 @@ jobs:
           $functionInput = @{
             ModuleIndex           = 'Bicep-Resource'
             TeamFilter            = 'BicepResourceContributors'
-            validateOwnersParent  = $true
-            createIssues          = $true
+            ValidateOwnersParent  = $true
+            CreateIssues          = $true
           }
 
           Write-Verbose 'Invoke task with' -Verbose
@@ -114,7 +114,7 @@ jobs:
           $functionInput = @{
             ModuleIndex           = 'Terraform-Resource'
             TeamFilter            = 'AllTerraformResource'
-            validateOwnersParent  = $true
+            ValidateOwnersParent  = $true
           }
 
           Write-Verbose 'Invoke task with' -Verbose

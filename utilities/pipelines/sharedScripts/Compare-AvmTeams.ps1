@@ -1,3 +1,43 @@
+<#
+.SYNOPSIS
+Compares Azure Verified Modules Module Indexes with existing GitHub Teams configurations. Issues with GitHub teams can be converted to Github Issues or verbose output.
+
+.DESCRIPTION
+Compares Azure Verified Modules Module Indexes with existing GitHub Teams configurations. Issues with GitHub teams can be converted to Github Issues or verbose output.
+
+.PARAMETER ModuleIndex
+Required. Modules Index to use as source, allowed strings are: 
+'Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern'
+
+.PARAMETER TeamFilter
+Required. Teams to filter on, allowed strings are:
+'AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors'
+
+.PARAMETER ValidateOwnersParent
+Optional. Validate if Parent Team is configured for Owners Team
+
+.PARAMETER ValidateContributorsParent
+Optional. Validate if Parent Team is configured for Contributors Team
+
+.PARAMETER CreateIssues
+Optional. Create GitHub Issues for unmatched teams
+
+.EXAMPLE
+Compare-AvmTeams -ModuleIndex Bicep-Resource -TeamFilter AllBicepResource -ValidateOwnersParent -Verbose -CreateIssues
+
+Compares all bicep resource modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed and GitHub Issues are created for unmatched teams.
+
+.EXAMPLE
+Compare-AvmTeams -ModuleIndex Terraform-Resource -TeamFilter AllTerraformResource -ValidateOwnersParent -Verbose -CreateIssues
+
+Compares all terraform resource modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed and GitHub Issues are created for unmatched teams.
+
+.EXAMPLE
+Compare-AvmTeams -ModuleIndex Bicep-Pattern -TeamFilter AllBicepPattern -ValidateOwnersParent -Verbose
+
+Compares all bicep pattern modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed, GitHub Issues are not created for unmatched teams.
+#>
+
 Function Compare-AvmTeams {
 
     [CmdletBinding()]
@@ -8,9 +48,9 @@ Function Compare-AvmTeams {
         [Parameter(Mandatory)]
         [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
         [string]$TeamFilter,
-        [switch]$validateOwnersParent,
-        [switch]$validateContributorsParent,
-        [switch]$createIssues
+        [switch]$ValidateOwnersParent,
+        [switch]$ValidateContributorsParent,
+        [switch]$CreateIssues
     )
 
     # Load used functions
@@ -45,9 +85,9 @@ Function Compare-AvmTeams {
                     $matchFound = $true
 
                     # Validate if Parent Team is configured for Owners Team
-                    if ($validateOwnersParent) {
+                    if ($ValidateOwnersParent) {
                         # Check if Parent Team is configured for Owners Team
-                        if (-not $null -eq $ghTeam.parent -And $validateOwnersParent) {
+                        if (-not $null -eq $ghTeam.parent -And $ValidateOwnersParent) {
                             Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
                             break
                         }
@@ -116,9 +156,9 @@ Function Compare-AvmTeams {
                     $matchFound = $true
                     
                     # Validate if Parent Team is configured for Contributors Team
-                    if ($validateContributorsParent) {
+                    if ($ValidateContributorsParent) {
                         # Check if Parent Team is configured for Contributors Team
-                        if (-not $null -eq $ghTeam.parent -And $validateContributorsParent) {
+                        if (-not $null -eq $ghTeam.parent -And $ValidateContributorsParent) {
                             Write-Verbose "Found team: $($module.ModuleContributorsGHTeam)  with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
                             break
                         }
@@ -189,7 +229,7 @@ Function Compare-AvmTeams {
         Write-Warning "Unmatched teams found:"
         Write-Warning $jsonOutput | Out-String
 
-        if ($createIssues){
+        if ($CreateIssues) {
             foreach ($unmatchedTeam in $unmatchedTeams) {
                 Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner "ChrisSidebotham" -ValidationError $unmatchedTeam.Validation -CreateIssues:$true -Verbose
             }
@@ -201,8 +241,13 @@ Function Compare-AvmTeams {
         }
 
         #Output in JSON for follow on tasks
-        Write-Error "Unmatched teams found, Review warnings for details."
-        $LASTEXITCODE = 1
-        return $jsonOutput
+        if (-not $CreateIssues) {
+            Write-Error "Unmatched teams found, Review warnings for details."
+            $LASTEXITCODE = 1
+        }
+        else {
+            Write-Output "Unmatched teams found, Github issues Created."
+            return $jsonOutput
+        }
     } 
 }
