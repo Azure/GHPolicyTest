@@ -83,10 +83,10 @@ jobs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
+          # ValidateContributorsParent until parent team created
           $functionInput = @{
             ModuleIndex                 = 'Bicep-Resource'
             TeamFilter                  = 'BicepResourceContributors'
-            ValidateContributorsParent  = $true
             CreateIssues                = $true
           }
 
@@ -110,12 +110,12 @@ jobs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
-
+          
+          # ValidateContributorsParent until parent team created
           $functionInput = @{
             ModuleIndex                 = 'Terraform-Resource'
             TeamFilter                  = 'AllTerraformResource'
             ValidateOwnersParent        = $true
-            ValidateContributorsParent  = $true
           }
 
           Write-Verbose 'Invoke task with' -Verbose
