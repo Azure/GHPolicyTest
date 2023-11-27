@@ -242,7 +242,7 @@ Function Compare-AvmTeams {
 
         #Output in JSON for follow on tasks
         if (-not $CreateIssues) {
-            Write-Error "Unmatched teams found, Review warnings for details."
+            Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, Review warnings for details."
             $LASTEXITCODE = 1
         }
         else {
