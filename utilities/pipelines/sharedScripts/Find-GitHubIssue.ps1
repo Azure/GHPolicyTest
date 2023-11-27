@@ -10,10 +10,10 @@ function Find-GithubIssue {
     
     foreach ($issue in $issues) {
         $matchFound = $false
-        if ($issue.Title -eq $title) {
+        if ($issue.title -eq $title) {
             $matchFound = $true
             $issueDetails = "$($issue.number) | $($issue.Title) | $($issue.assignees.login)"
-            Write-Output "Good News! Issue Found:: $($issue.number) | $($issue.Title) | $($issue.assignees.login)"
+            Write-Output "Good News! Issue Found:: $($issue.number) | $($issue.title) | $($issue.assignees.login)"
             break
             # return $issueDetails
         }
