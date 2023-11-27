@@ -99,6 +99,7 @@ Function Compare-AvmTeams {
                                 Validation     = "No parent team assigned."
                                 Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                                 GitHubTeamName = $ghTeam.name
+                                Resolution     = "Assign the correct parent team to the team: $($module.ModuleOwnersGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
                             }
                             # Add the custom object to the array
                             $unmatchedTeams += $unmatchedTeam
@@ -126,7 +127,7 @@ Function Compare-AvmTeams {
                         Validation     = "@azure/ prefix found."
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = $ghTeam.name
-                        
+                        Resolution     = "Remove the '@azure/' prefix from the team name."                        
                     }
                     # Add the custom object to the array
                     $unmatchedTeams += $unmatchedTeam
@@ -142,6 +143,7 @@ Function Compare-AvmTeams {
                     Validation     = "No team found."
                     Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                     GitHubTeamName = "N/A"
+                    Resolution     = "Create a new team with the name $($module.ModuleOwnersGHTeam)"
                 }
                 # Add the custom object to the array
                 $unmatchedTeams += $unmatchedTeam
@@ -170,6 +172,7 @@ Function Compare-AvmTeams {
                                 Validation     = "No parent team assigned."
                                 Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                                 GitHubTeamName = $ghTeam.name
+                                Resolution     = "Assign the correct parent team to the team: $($module.ModuleContributorsGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
                             }
                             # Add the custom object to the array
                             $unmatchedTeams += $unmatchedTeam
@@ -194,6 +197,7 @@ Function Compare-AvmTeams {
                         Validation     = "@azure/ prefix found."
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = $ghTeam.name
+                        Resolution     = "Remove the '@azure/' prefix from the team name."
                     }
                     # Add the custom object to the array
                     $unmatchedTeams += $unmatchedTeam
@@ -212,6 +216,7 @@ Function Compare-AvmTeams {
                         Validation     = "No team found."
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = "N/A"
+                        Resolution     = "Create a new team with the name $($module.ModuleContributorsGHTeam)"
                     }
                     # Add the custom object to the array
                     $unmatchedTeams += $unmatchedTeam
@@ -232,12 +237,12 @@ Function Compare-AvmTeams {
 
         if ($CreateIssues) {
             foreach ($unmatchedTeam in $unmatchedTeams) {
-                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner "ChrisSidebotham" -ValidationError $unmatchedTeam.Validation -CreateIssues:$true -Verbose
+                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner $unmatchedTeam.Owner -ValidationError $unmatchedTeam.Validation -ResolutionInfo $unmatchedTeam.Resolution -CreateIssues:$true -Verbose
             }
         }
         else {
             foreach ($unmatchedTeam in $unmatchedTeams) {
-                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner "ChrisSidebotham" -ValidationError $unmatchedTeam.Validation -CreateIssues:$false -Verbose
+                Set-AvmGitHubTeamsIssue -TeamName $unmatchedTeam.TeamName -Owner $unmatchedTeam.Owner -ValidationError $unmatchedTeam.Validation -ResolutionInfo $unmatchedTeam.Resolution -CreateIssues:$false -Verbose
             }
         }
 
