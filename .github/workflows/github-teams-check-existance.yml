@@ -83,11 +83,21 @@ jobs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
-          # ValidateContributorsParent until parent team created
-          $functionInput = @{
-            ModuleIndex                 = 'Bicep-Resource'
-            TeamFilter                  = 'BicepResourceContributors'
-            CreateIssues                = $true
+          # Branch check so issues are only opened on main
+          if ($env.GITHUB_REF_NAME -eq "main"){
+            # ValidateContributorsParent until parent team created
+            $functionInput = @{
+              ModuleIndex                 = 'Bicep-Resource'
+              TeamFilter                  = 'BicepResourceContributors'
+              CreateIssues                = $true
+            }
+          }
+          else{
+            $functionInput = @{
+              ModuleIndex                 = 'Bicep-Resource'
+              TeamFilter                  = 'BicepResourceContributors'
+              ValidateContributorsParent  = $true
+            }
           }
 
           Write-Verbose 'Invoke task with' -Verbose

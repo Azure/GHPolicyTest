@@ -6,7 +6,7 @@ function Find-GithubIssue {
     )
     
     $issueList = gh issue list --json number,title,assignees,labels,id | ConvertFrom-Json
-    $issueDetails = ""
+    $issueDetails = $null
 
     foreach ($issueItem in $issueList) {
         if ($issueItem.title -eq $title) {

@@ -53,7 +53,7 @@ function Set-AvmGitHubTeamsIssue {
 
     $issues = Find-GithubIssue -title $title
 
-    if ([string]::IsNullOrEmpty($issues) -And $CreateIssues) {
+    if (($issues -like "No match found*") -And $CreateIssues) {
         Write-Output "No issue found for: $($title), Creating new issue."
         try {
             New-AvmGitHubTeamsIssue -title $title -assignee $Owner -body $body -labels $labels
@@ -63,11 +63,11 @@ function Set-AvmGitHubTeamsIssue {
             return $Error
         }
     }
-    elseif ([string]::IsNullOrEmpty($issues) -And -not $CreateIssues) {
+    elseif (($issues -like "No match found*") -And !$CreateIssues) {
         Write-Verbose "New issue should be created for: $($title) with $($body)"
         Write-Verbose "Issue not created due to -CreateIssues switch not being used. (Check Branch)"
     }
     else {
-        Write-Output "Issue found for: $($title)"
+        Write-Output "Search Output: $($issues)"
     }
 }
