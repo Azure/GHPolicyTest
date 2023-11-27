@@ -226,6 +226,7 @@ Function Compare-AvmTeams {
     } 
     else {
         $jsonOutput = $unmatchedTeams | ConvertTo-Json -Depth 3
+        $jsonString = $jsonOutput | Out-String
         Write-Warning "Unmatched teams found:"
         Write-Warning $jsonOutput | Out-String
 
@@ -242,7 +243,7 @@ Function Compare-AvmTeams {
 
         #Output in JSON for follow on tasks
         if (-not $CreateIssues) {
-            Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, Review warnings for details."
+            Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, $($jsonString)"
             "## :warning: Unmatched teams found, Review step warnings for details." >> $env.GITHUB_STEP_SUMMARY
             $LASTEXITCODE = 1
         }
