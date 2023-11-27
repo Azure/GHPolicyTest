@@ -12,7 +12,7 @@ function Find-GithubIssue {
         Write-Verbose "trying to find $($title)"
         Write-Verbose "issueItem.title: $($issueItem.title)"
         if ($issueItem.title -eq $title) {
-            $issueDetails = "$($issueItem.number) | $($issueItem.Title) | $($issueItem.assignees.login)"
+            $issueDetails = "$($issueItem.number) | $($issueItem.title) | $($issueItem.assignees.login)"
             Write-Output "Good News! Issue Found:: $($issueDetails)"
             return $issueDetails
         }
