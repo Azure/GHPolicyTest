@@ -55,11 +55,23 @@ jobs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
-          $functionInput = @{
-            ModuleIndex           = 'Bicep-Resource'
-            TeamFilter            = 'BicepResourceOwners'
-            ValidateOwnersParent  = $true
+          # Branch check so issues are only opened on main
+          if ($env.GITHUB_REF_NAME -eq "main"){
+            $functionInput = @{
+              ModuleIndex                 = 'Bicep-Resource'
+              TeamFilter                  = 'BicepResourceOwners'
+              CreateIssues                = $true
+              ValidateOwnersParent        = $true
 
+            }
+          }
+          else{
+            $functionInput = @{
+              ModuleIndex                 = 'Bicep-Resource'
+              TeamFilter                  = 'BicepResourceOwners'
+              ValidateOwnersParent        = $true
+
+            }
           }
 
           Write-Verbose 'Invoke task with' -Verbose
@@ -85,7 +97,7 @@ jobs:
 
           # Branch check so issues are only opened on main
           if ($env.GITHUB_REF_NAME -eq "main"){
-            # ValidateContributorsParent until parent team created
+            # Excluding ValidateContributorsParent until parent team created
             $functionInput = @{
               ModuleIndex                 = 'Bicep-Resource'
               TeamFilter                  = 'BicepResourceContributors'
@@ -96,7 +108,6 @@ jobs:
             $functionInput = @{
               ModuleIndex                 = 'Bicep-Resource'
               TeamFilter                  = 'BicepResourceContributors'
-              ValidateContributorsParent  = $true
             }
           }
 
@@ -121,13 +132,22 @@ jobs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
           
-          # ValidateContributorsParent until parent team created
-          $functionInput = @{
-            ModuleIndex                 = 'Terraform-Resource'
-            TeamFilter                  = 'AllTerraformResource'
-            ValidateOwnersParent        = $true
+          # Excluding ValidateContributorsParent until parent team created
+          if ($env.GITHUB_REF_NAME -eq "main"){
+            $functionInput = @{
+              ModuleIndex                 = 'Terraform-Resource'
+              TeamFilter                  = 'AllTerraformResource'
+              ValidateOwnersParent        = $true
+              CreateIssues                = $true
+            }
           }
-
+          else{
+            $functionInput = @{
+              ModuleIndex                 = 'Terraform-Resource'
+              TeamFilter                  = 'AllTerraformResource'
+              ValidateOwnersParent        = $true
+            }
+          }
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
