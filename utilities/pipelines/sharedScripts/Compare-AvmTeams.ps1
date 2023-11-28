@@ -102,7 +102,7 @@ Function Compare-AvmTeams {
                             $unmatchedTeam = [PSCustomObject]@{
                                 TeamName       = $module.ModuleOwnersGHTeam
                                 Validation     = "No parent team assigned."
-                                Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                Owner          = "@me"
                                 GitHubTeamName = $ghTeam.name
                                 Resolution     = "Assign the correct parent team to the team: $($module.ModuleOwnersGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
                             }
@@ -175,7 +175,7 @@ Function Compare-AvmTeams {
                             $unmatchedTeam = [PSCustomObject]@{
                                 TeamName       = $module.ModuleContributorsGHTeam
                                 Validation     = "No parent team assigned."
-                                Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                Owner          = "@me"
                                 GitHubTeamName = $ghTeam.name
                                 Resolution     = "Assign the correct parent team to the team: $($module.ModuleContributorsGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
                             }
