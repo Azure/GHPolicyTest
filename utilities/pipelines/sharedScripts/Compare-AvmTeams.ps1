@@ -11,7 +11,7 @@ Required. Modules Index to use as source, allowed strings are:
 
 .PARAMETER TeamFilter
 Required. Teams to filter on, allowed strings are:
-'AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors'
+'AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors'
 
 .PARAMETER ValidateOwnersParent
 Optional. Validate if Parent Team is configured for Owners Team
@@ -47,7 +47,7 @@ Function Compare-AvmTeams {
         [string]$ModuleIndex,
         
         [Parameter(Mandatory)]
-        [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
+        [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
 
         [string]$TeamFilter,
 

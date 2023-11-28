@@ -2,7 +2,7 @@ Function Get-GitHubTeams {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
+        [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
         [string]$TeamFilter
     )
     # use githubCLI to get all teams in Azure organization
@@ -61,7 +61,7 @@ Function Get-GitHubTeams {
         'AllTerraformResource' { return $filterAvmTfResGhTeams }
         'TerraformResourceOwners' { return $filterAvmTfResGhTeamsOwners }
         'TerraformResourceContributors' { return $filterAvmTfResGhTeamsContributors }
-        'AllTeraformPattern' { return $filterAvmTfPtnGhTeams }
+        'AllTerraformPattern' { return $filterAvmTfPtnGhTeams }
         'TerraformPatternOwners' { return $filterAvmTfPtnGhTeamsOwners }
         'TerraformPatternContributors' { return $filterAvmTfPtnGhTeamsContributors }
     }
