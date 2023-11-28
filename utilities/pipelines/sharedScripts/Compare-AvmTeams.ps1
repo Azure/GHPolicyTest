@@ -45,11 +45,16 @@ Function Compare-AvmTeams {
         [Parameter(Mandatory)]
         [ValidateSet('Bicep-Resource', 'Bicep-Pattern', 'Terraform-Resource', 'Terraform-Pattern')]
         [string]$ModuleIndex,
+        
         [Parameter(Mandatory)]
         [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTeraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
+
         [string]$TeamFilter,
+
         [switch]$ValidateOwnersParent,
+
         [switch]$ValidateContributorsParent,
+        
         [switch]$CreateIssues
     )
 
@@ -140,7 +145,7 @@ Function Compare-AvmTeams {
                 Write-Verbose "No team found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                 $unmatchedTeam = [PSCustomObject]@{
                     TeamName       = $module.ModuleOwnersGHTeam
-                    Validation     = "No team found."
+                    Validation     = "GitHub team not found. "
                     Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                     GitHubTeamName = "N/A"
                     Resolution     = "Create a new team with the name $($module.ModuleOwnersGHTeam)"
@@ -213,7 +218,7 @@ Function Compare-AvmTeams {
                     Write-Verbose "No team found for: $($module.ModuleContributorsGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                     $unmatchedTeam = [PSCustomObject]@{
                         TeamName       = $module.ModuleContributorsGHTeam
-                        Validation     = "No team found."
+                        Validation     = "GitHub team not found. "
                         Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
                         GitHubTeamName = "N/A"
                         Resolution     = "Create a new team with the name $($module.ModuleContributorsGHTeam)"
@@ -248,8 +253,8 @@ Function Compare-AvmTeams {
 
         #Output in JSON for follow on tasks
         if (-not $CreateIssues) {
-            Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, $($jsonString)"
-            "## :warning: Unmatched teams found, Review step warnings for details." >> $env.GITHUB_STEP_SUMMARY
+            Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, Review step warnings for details."
+            Write-Verbose "## :warning: Unmatched teams found, Review step warnings for details." >> $env.GITHUB_STEP_SUMMARY -Verbose
             $LASTEXITCODE = 1
         }
         else {
