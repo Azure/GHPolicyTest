@@ -8,7 +8,7 @@ function New-AVMGitHubTeamsIssue {
         [Parameter(Mandatory)]
         [string]$body,
         [Parameter(Mandatory=$false)]
-        [string]$labels
+        [array]$labels
     )
     
     gh auth status  
@@ -17,7 +17,11 @@ function New-AVMGitHubTeamsIssue {
         exit 1
     }
     try {
-        gh issue create --title $title --body $body --assignee $assignee --label $labels    
+        # Build the labels part of the command
+        $joinedLabels = $labels | ForEach-Object { "--label $_" } -join ' '
+
+        # Construct the full command
+        gh issue create --title $title --body $body --assignee $assignee $joinedLabels
     }
     catch {
         Write-Error "Unable to create issue. Check network connection."
