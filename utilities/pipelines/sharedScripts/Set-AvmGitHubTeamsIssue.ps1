@@ -56,6 +56,7 @@ function Set-AvmGitHubTeamsIssue {
     $teamTable = "| Team Name | Owner | Issue |`n| --- | --- | --- |`n| $TeamName | $Owner | $validationError |"
     $resolutionSegment = "# Resolution `n$ResolutionInfo"
     $body = "$teamError`n`n$teamTable`n`n$resolutionSegment`n`n$bodyAutoDisclaimer"
+    $labels = @("Needs: Triage :mag:", "Type: AVM :a: :v: :m:")
 
     $issues = Find-GithubIssue -title $title
 
