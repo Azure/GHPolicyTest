@@ -149,7 +149,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
-      - name: "Compare Terraform Resource Teams"
+      - name: "Compare Terraform Pattern Teams"
         if: always()
         id: comparetfptn
         shell: pwsh
