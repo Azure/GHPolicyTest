@@ -254,7 +254,7 @@ Function Compare-AvmTeams {
         #Output in JSON for follow on tasks
         if (-not $CreateIssues) {
             Write-Output "::warning file=Compare-AvmTeams.ps1::Unmatched teams found, Review step warnings for details."
-            Write-Verbose "## :warning: Unmatched teams found, Review step warnings for details." >> $env.GITHUB_STEP_SUMMARY -Verbose
+            Write-Output "## :warning: Unmatched teams found, Review step warnings for details." >> $env.GITHUB_STEP_SUMMARY -Verbose
             $LASTEXITCODE = 1
         }
         else {
