@@ -53,9 +53,9 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
           $functionInput = @{
-            ModuleIndex                 = 'Bicep-Resource'
-            TeamFilter                  = 'BicepResourceOwners'
-            ValidateOwnersParent        = $true
+            ModuleIndex                       = 'Bicep-Resource'
+            TeamFilter                        = 'BicepResourceOwners'
+            ValidateBicepParentConfiguration  = $true
           }
 
 
@@ -66,7 +66,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose
 
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -80,11 +80,11 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
           # Branch check so issues are only opened on main
-          
+
           $functionInput = @{
-            ModuleIndex                 = 'Bicep-Resource'
-            TeamFilter                  = 'BicepResourceContributors'
-            ValidateContributorsParent  = $true
+            ModuleIndex                       = 'Bicep-Resource'
+            TeamFilter                        = 'BicepResourceContributors'
+            ValidateBicepParentConfiguration  = $true
           }
 
           if ($env.GITHUB_REF_NAME -eq "main"){
@@ -94,7 +94,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
@@ -107,11 +107,11 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
 
           # Branch check so issues are only opened on main
-          
+
           $functionInput = @{
-            ModuleIndex                 = 'Bicep-Pattern'
-            TeamFilter                  = 'AllBicepPattern'
-            ValidateContributorsParent  = $true
+            ModuleIndex                       = 'Bicep-Pattern'
+            TeamFilter                        = 'AllBicepPattern'
+            ValidateBicepParentConfiguration  = $true
           }
 
           if ($env.GITHUB_REF_NAME -eq "main"){
@@ -121,9 +121,9 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}          
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: "Compare Terraform Resource Teams"
         if: always()
@@ -132,10 +132,11 @@ jobs:
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
-          
+
             $functionInput = @{
-              ModuleIndex                 = 'Terraform-Resource'
-              TeamFilter                  = 'AllTerraformResource'
+              ModuleIndex                      = 'Terraform-Resource'
+              TeamFilter                       = 'AllTerraformResource'
+              ValidateTerraformTeamsPermissons = $true
             }
 
           if ($env.GITHUB_REF_NAME -eq "main"){
@@ -145,7 +146,7 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
@@ -156,10 +157,11 @@ jobs:
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Compare-AvmTeams.ps1')
-          
+
             $functionInput = @{
-              ModuleIndex                 = 'Terraform-Pattern'
-              TeamFilter                  = 'AllTerraformPattern'
+              ModuleIndex                       = 'Terraform-Pattern'
+              TeamFilter                        = 'AllTerraformPattern'
+              ValidateTerraformTeamsPermissons  = $true
             }
 
           if ($env.GITHUB_REF_NAME -eq "main"){
@@ -169,6 +171,6 @@ jobs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Compare-AvmTeams @functionInput -Verbose 
+          Compare-AvmTeams @functionInput -Verbose
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
