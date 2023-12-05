@@ -5,11 +5,17 @@ Function Get-GitHubTeams {
         [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
         [string]$TeamFilter
     )
-    # use githubCLI to get all teams in Azure organization
-    $rawGhTeams = gh api orgs/Azure/teams --paginate
+
+    try {
+        # use githubCLI to get all teams in Azure organization
+        $rawGhTeams = gh api orgs/Azure/teams --paginate
+        $formattedGhTeams = ConvertFrom-Json $rawGhTeams
+    }
+    catch {
+        Write-Error "Error: $_"
+    }
     
     # Convert JSON to PowerShell Object
-    $formattedGhTeams = ConvertFrom-Json $rawGhTeams
     
     # Filter Teams for AVM
     $filterAvmGhTeams = $formattedGhTeams | Where-Object { $_.name -like '*avm-*' }    

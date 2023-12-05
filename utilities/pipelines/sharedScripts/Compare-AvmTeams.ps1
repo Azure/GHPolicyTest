@@ -13,27 +13,27 @@ Required. Modules Index to use as source, allowed strings are:
 Required. Teams to filter on, allowed strings are:
 'AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors'
 
-.PARAMETER ValidateOwnersParent
+.PARAMETER ValidateBicepParentConfiguration
 Optional. Validate if Parent Team is configured for Owners Team
 
-.PARAMETER ValidateContributorsParent
-Optional. Validate if Parent Team is configured for Contributors Team
+.PARAMETER ValidateTerraformTeamsPermissons
+Optional. Validate if correct permissions are configured for Terraform Teams
 
 .PARAMETER CreateIssues
 Optional. Create GitHub Issues for unmatched teams
 
 .EXAMPLE
-Compare-AvmTeams -ModuleIndex Bicep-Resource -TeamFilter AllBicepResource -ValidateOwnersParent -Verbose -CreateIssues
+Compare-AvmTeams -ModuleIndex Bicep-Resource -TeamFilter AllBicepResource -ValidateBicepParentConfiguration -Verbose -CreateIssues
 
 Compares all bicep resource modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed and GitHub Issues are created for unmatched teams.
 
 .EXAMPLE
-Compare-AvmTeams -ModuleIndex Terraform-Resource -TeamFilter AllTerraformResource -ValidateOwnersParent -Verbose -CreateIssues
+Compare-AvmTeams -ModuleIndex Terraform-Resource -TeamFilter AllTerraformResource -ValidateTerraformTeamsPermissons -Verbose -CreateIssues
 
-Compares all terraform resource modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed and GitHub Issues are created for unmatched teams.
+Compares all terraform resource modules with GitHub Teams and validates if Teams have correct permissions on repository. Verbose output is displayed and GitHub Issues are created for unmatched teams.
 
 .EXAMPLE
-Compare-AvmTeams -ModuleIndex Bicep-Pattern -TeamFilter AllBicepPattern -ValidateOwnersParent -Verbose
+Compare-AvmTeams -ModuleIndex Bicep-Pattern -TeamFilter AllBicepPattern -ValidateBicepParentConfiguration -Verbose
 
 Compares all bicep pattern modules with GitHub Teams and validates if Parent Team is configured for Owners Team. Verbose output is displayed, GitHub Issues are not created for unmatched teams.
 #>
@@ -48,13 +48,15 @@ Function Compare-AvmTeams {
         
         [Parameter(Mandatory)]
         [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'BicepResourceOwners', 'BicepResourceContributors', 'AllBicepPattern', 'BicepPatternOwners', 'BicepPatternContributors', 'AllTerraform', 'AllTerraformResource', 'TerraformResourceOwners', 'TerraformResourceContributors', 'AllTerraformPattern', 'TerraformPatternOwners', 'TerraformPatternContributors' )]
-
         [string]$TeamFilter,
 
-        [switch]$ValidateOwnersParent,
+        [Parameter(Mandatory = $false)]
+        [switch]$ValidateBicepParentConfiguration,
 
-        [switch]$ValidateContributorsParent,
-        
+        [Parameter(Mandatory = $false)]
+        [switch]$ValidateTerraformTeamsPermissons,
+
+        [Parameter(Mandatory = $false)]
         [switch]$CreateIssues
     )
 
@@ -62,16 +64,17 @@ Function Compare-AvmTeams {
     . (Join-Path $PSScriptRoot 'Get-AvmCsvData.ps1')
     . (Join-Path $PSScriptRoot 'Get-AvmGitHubTeamsData.ps1')
     . (Join-Path $PSScriptRoot 'Set-AvmGitHubTeamsIssue.ps1')
+    . (Join-Path $PSScriptRoot 'Get-AvmGitHubTeamRepoConfiguration.ps1')
 
     if ($TeamFilter -like '*All*') {
         $validateAll = $true
     }
 
     if ($TeamFilter -like '*Owners*') {
-        $validateOwners = $true
+        $validateOwnerTeams = $true
     }
     if ($TeamFilter -like '*Contributors*') {
-        $validateContributors = $true
+        $validateContributorTeams = $true
     }
 
     # Retrieve the CSV file
@@ -82,7 +85,7 @@ Function Compare-AvmTeams {
     foreach ($module in $sourceData) {
         # Assume no match is found initially
         $matchFound = $false
-        if ($validateOwners -Or $validateAll) {
+        if ($validateOwnerTeams -Or $validateAll) {
             # Check each object in $ghTeam for a match
             foreach ($ghTeam in $gitHubTeamsData) {
                 if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
@@ -90,9 +93,9 @@ Function Compare-AvmTeams {
                     $matchFound = $true
 
                     # Validate if Parent Team is configured for Owners Team
-                    if ($ValidateOwnersParent) {
+                    if ($ValidateBicepParentConfiguration -and $matchFound) {
                         # Check if Parent Team is configured for Owners Team
-                        if (-not $null -eq $ghTeam.parent -And $ValidateOwnersParent) {
+                        if (-not $null -eq $ghTeam.parent -and $ValidateBicepParentConfiguration) {
                             Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
                             break
                         }
@@ -111,7 +114,35 @@ Function Compare-AvmTeams {
                             break
                         }
                     }
-                    else {
+                    elseif ($ValidateTerraformTeamsPermissons -and $matchFound) {
+                        Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) Checking Permissions configuration"
+                        if ($module.ModuleOwnersGHTeam -like "*-tf") {
+                            $repoName = "terraform-azurerm-$($module.ModuleName)"
+                            $repoConfiguration = Get-AvmGitHubTeamRepoConfiguration -Organization Azure -TeamName $module.ModuleOwnersGHTeam -RepoName $repoName
+                            if ($repoConfiguration -match "Success") {
+                                Write-Verbose "Good News! Repo: $repoName is configured with the expected permission: admin"
+                            }
+                            else {
+                                Write-Verbose "Uh-oh no correct permissions configured for $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                                # Create a custom object for the unmatched team
+                                $unmatchedTeam = [PSCustomObject]@{
+                                    TeamName       = $module.ModuleOwnersGHTeam
+                                    Validation     = "No correct permissions assigned."
+                                    Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                    GitHubTeamName = $ghTeam.name
+                                    Resolution     = "Please assign the correct permissions to the team: $($module.ModuleOwnersGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
+                                }
+                                # Add the custom object to the array
+                                $unmatchedTeams += $unmatchedTeam
+                                break
+                            }
+                        }
+                        else {
+                            Write-Verbose "Skipping non Terraform module: $($module.ModuleOwnersGHTeam)"
+                            break
+                        }
+                    }
+                    elseif ($matchFound) {
                         # Write verbose output without parent check
                         Write-Verbose "Found team: $($module.ModuleOwnersGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
                         break
@@ -155,7 +186,7 @@ Function Compare-AvmTeams {
             }
         }
 
-        if ($validateContributors -Or $validateAll) {
+        if ($validateContributorTeams -Or $validateAll) {
             # Check each object in $ghTeam for a match
             foreach ($ghTeam in $gitHubTeamsData) {
                 if ($module.ModuleContributorsGHTeam -eq $ghTeam.name) {
@@ -163,9 +194,9 @@ Function Compare-AvmTeams {
                     $matchFound = $true
                     
                     # Validate if Parent Team is configured for Contributors Team
-                    if ($ValidateContributorsParent) {
+                    if ($ValidateBicepParentConfiguration -and $matchFound) {
                         # Check if Parent Team is configured for Contributors Team
-                        if (-not $null -eq $ghTeam.parent -And $ValidateContributorsParent) {
+                        if (-not $null -eq $ghTeam.parent -and $ValidateBicepParentConfiguration) {
                             Write-Verbose "Found team: $($module.ModuleContributorsGHTeam)  with parent: $($ghTeam.parent.name) owned by $($module.PrimaryModuleOwnerDisplayName)"
                             break
                         }
@@ -183,10 +214,39 @@ Function Compare-AvmTeams {
                             $unmatchedTeams += $unmatchedTeam
                         }
                     }
-                    else {
-                        Write-Verbose "Found team: $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                    elseif ($ValidateTerraformTeamsPermissons -and $matchFound) {
+                        Write-Verbose "Found team: $($module.ModuleContributorsGHTeam) Checking Permissions configuration"
+                        if ($module.ModuleContributorsGHTeam -like "*-tf") {
+                            $repoName = "terraform-azurerm-$($module.ModuleName)"
+                            $repoConfiguration = Get-AvmGitHubTeamRepoConfiguration -Organization Azure -TeamName $module.ModuleContributorsGHTeam -RepoName $repoName
+                            if ($repoConfiguration -match "Success") {
+                                Write-Verbose "Good News! Repo: $repoName is configured with the expected permission: write"
+                            }
+                            else {
+                                Write-Verbose "Uh-oh no correct permissions configured for $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                                # Create a custom object for the unmatched team
+                                $unmatchedTeam = [PSCustomObject]@{
+                                    TeamName       = $module.ModuleContributorsGHTeam
+                                    Validation     = "No correct permissions assigned."
+                                    Owner          = "$($module.PrimaryModuleOwnerGHHandle) ($($module.PrimaryModuleOwnerDisplayName))"
+                                    GitHubTeamName = $ghTeam.name
+                                    Resolution     = "Please assign the correct permissions to the team: $($module.ModuleContributorsGHTeam). This can be found in [SNFR20](https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-snfr20---category-contributionsupport---github-teams-only) "
+                                }
+                                # Add the custom object to the array
+                                $unmatchedTeams += $unmatchedTeam
+                                break
+                            }
+                        }
+                        else {
+                            Write-Verbose "Skipping non Terraform module: $($module.ModuleContributorsGHTeam)"
+                            break
+                        }
                     }
-                    break
+                    elseif ($matchFound) {
+                        Write-Verbose "Found team: $($module.ModuleContributorsGHTeam) ($($module.PrimaryModuleOwnerDisplayName))"
+                        break
+                    }
+                    
                 }
                 
                 # Check for match with "@Azure/" prefix
@@ -206,7 +266,6 @@ Function Compare-AvmTeams {
                     }
                     # Add the custom object to the array
                     $unmatchedTeams += $unmatchedTeam
-                    break
                     break
                 }
             }

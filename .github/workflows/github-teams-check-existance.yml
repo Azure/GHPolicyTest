@@ -4,7 +4,7 @@ name: Github Team - Check Existance
 on:
   # Runs on pushes targeting the default branch
   schedule:
-    - cron: "0 10 * * 1-5" # At 10:00 AM, Monday through Friday
+    - cron: "0 15 * * 1-5" # At 15:00, Monday through Friday
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: {}
