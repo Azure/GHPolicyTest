@@ -10,7 +10,7 @@ on:
 
 jobs:
   NotifyTeams:
-    name: Check-Team-Existance
+    name: Notify-Team
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
