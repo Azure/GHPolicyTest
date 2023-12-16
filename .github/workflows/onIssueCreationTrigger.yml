@@ -1,0 +1,26 @@
+# Workflow for notifying and assigning issues on creation
+name: Issue Creation - notify and assign team
+
+on:
+  issues:
+    types: [opened]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: {}
+
+jobs:
+  NotifyTeams:
+    name: Check-Team-Existance
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+# parse CSV
+# parse issue body
+# get first occurence of avm/...
+# find entry in CSV
+# assign issue
+# write comment
