@@ -186,3 +186,25 @@ Function Compare-TerraformOwnersTeams {
         }
     }
 }
+
+function Set-Issue {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Repo,
+
+        [Parameter(Mandatory = $true)]
+        [string] $IssueUrl,
+
+        [Parameter(Mandatory = $true)]
+        [string] $IssueBody
+    )
+
+    if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
+        # gh issue comment $issue.url --body "" --repo $Repo
+    }
+
+    # Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
+    # Write-Verbose ('[{0}] issue(s){1} commented' -f $issuesCommented, $($WhatIfPreference ? ' would have been' : ''))
+    # Write-Verbose ('[{0}] issue(s){1} closed' -f $issuesClosed, $($WhatIfPreference ? ' would have been' : ''))
+}

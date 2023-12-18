@@ -12,18 +12,31 @@ jobs:
   NotifyTeams:
     name: Notify-Team
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: "Run scripts"
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        name: "Run scripts"
         shell: pwsh
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'scripts' 'Utilities.ps1')
 
-          
+          $functionInput = @{
+            Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            IssueUrl = "${{ github.event.issue.url }}""
+            IssueBody = "${{ github.event.issue.body }}"
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Set-Issue @functionInput -Verbose # -WhatIf
 
 # parse CSV
 # parse issue body
