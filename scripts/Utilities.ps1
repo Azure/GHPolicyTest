@@ -197,7 +197,7 @@ function Set-Issue {
         [string] $IssueUrl
     )
 
-    $issue = gh issue view $IssueUrl --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    $issue = gh issue view $IssueUrl.Replace('api.','').Replace('repos/','') --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
     # parse CSV
     # parse issue body
@@ -208,7 +208,7 @@ function Set-Issue {
 
 
     if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
-        # gh issue comment $issue.url --body "" --repo $Repo
+        gh issue comment $issue.url --body "Testcomment" --repo $Repo
     }
 
     # Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
