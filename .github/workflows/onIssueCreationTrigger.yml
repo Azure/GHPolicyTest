@@ -30,9 +30,6 @@ jobs:
           $functionInput = @{
             Repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
             IssueUrl = "${{ github.event.issue.url }}""
-            # IssueBody = @"
-            # ${{ github.event.issue.body }}
-            # "@
           }
 
           Write-Verbose "Invoke task with" -Verbose

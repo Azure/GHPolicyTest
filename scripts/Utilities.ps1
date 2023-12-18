@@ -194,10 +194,7 @@ function Set-Issue {
         [string] $Repo,
 
         [Parameter(Mandatory = $true)]
-        [string] $IssueUrl#,
-
-        # [Parameter(Mandatory = $true)]
-        # [string] $IssueBody
+        [string] $IssueUrl
     )
 
     # if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
