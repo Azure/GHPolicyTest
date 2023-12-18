@@ -197,9 +197,19 @@ function Set-Issue {
         [string] $IssueUrl
     )
 
-    # if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
+    $issue = gh issue view $IssueUrl --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+
+    # parse CSV
+    # parse issue body
+    # get first occurence of avm/...
+    # find entry in CSV
+    # assign issue
+    # write comment
+
+
+    if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
         # gh issue comment $issue.url --body "" --repo $Repo
-    # }
+    }
 
     # Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
     # Write-Verbose ('[{0}] issue(s){1} commented' -f $issuesCommented, $($WhatIfPreference ? ' would have been' : ''))

@@ -36,10 +36,3 @@ jobs:
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           Set-Issue @functionInput -Verbose # -WhatIf
-
-# parse CSV
-# parse issue body
-# get first occurence of avm/...
-# find entry in CSV
-# assign issue
-# write comment
