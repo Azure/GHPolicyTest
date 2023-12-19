@@ -199,18 +199,14 @@ function Set-Issue {
 
     $issue = gh issue view $IssueUrl.Replace('api.','').Replace('repos/','') --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
     $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim()
-
-    # parse CSV
-    # parse issue body
-    # get first occurence of avm/...
-    # find entry in CSV
-    # assign issue
-    # write comment
-
-
-    if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
-        gh issue comment $issue.url --body "Testcomment" --repo $Repo
-        # add labels
+    $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+    $module = Get-AvmCsv -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    
+    if ($PSCmdlet.ShouldProcess("Issue [$issue.title]", 'Add comment')) {
+        # assign issue & add label
+        gh issue edit $issue.url --add-assignee $module.ModuleOwnersGHTeam --add-label "Needs: Triage :mag:" --repo $Repo
+        # write comment
+        gh issue comment $issue.url --body "Work todo" --repo $Repo
     }
 
     # Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
