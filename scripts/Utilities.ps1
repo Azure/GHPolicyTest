@@ -60,133 +60,6 @@ Function Get-AvmCsv {
     return $filterCsvAvailableBicepModule
 }
 
-Function Get-AvmResTfCsv {
-    # Retrieve the CSV file
-    $unfilteredBicepCSV = Invoke-WebRequest -Uri "https://aka.ms/avm/index/tf/res/csv"
-    # Convert the CSV content to a PowerShell object
-    $formattedBicepFullCsv = ConvertFrom-CSV $unfilteredBicepCSV.Content
-    # Filter the CSV data where the ModuleStatus is 'Module Available :green_circle:'
-    $filterCsvAvailableBicepModule = $formattedBicepFullCsv | Where-Object { $_.ModuleStatus -eq 'Module Available :green_circle:' }
-    
-    # Loop through each item in the filtered data
-    foreach ($item in $filterCsvAvailableBicepModule) {
-        # Remove '@Azure/' from the ModuleOwnersGHTeam property
-        $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
-        # Remove '@Azure/' from the ModuleContributorsGHTeam property
-        $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
-    }
-
-    # Return the filtered and modified data
-    return $filterCsvAvailableBicepModule
-}
-
-Function Get-GitHubTeams {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [ValidateSet('AllTeams', 'AllResource', 'AllPattern', 'AllBicep', 'AllBicepResource', 'AllBicepResourceOwners', 'AllBicepPattern', 'AllTerraform', 'AllTerraformResource', 'AllTerraformResourceOwners', 'AllTeraformPattern' )]
-        [string]$TeamFilter
-    )
-    # use githubCLI to get all teams in Azure organization
-    $rawGhTeams = gh api orgs/Azure/teams --paginate
-    
-    # Convert JSON to PowerShell Object
-    $formattedGhTeams = ConvertFrom-Json $rawGhTeams
-    
-    # Filter Teams for AVM
-    $filterAvmGhTeams = $formattedGhTeams | Where-Object { $_.name -like 'avm-*' }    
-    # Filter Teams for AVM Resource Modules
-    $filterAvmResGhTeams = $filterAvmGhTeams | Where-Object { $_.name -like '*res-*' }
-    # Filter Teams for AVM Pattern Modules
-    $filterAvmPtnGhTeams = $filterAvmGhTeams | Where-Object { $_.name -like '*ptn-*' }
-    # Filter AVM Module Teams for Bicep
-    $filterAvmBicepGhTeams = $filterAvmGhTeams | Where-Object { $_.name -like '*bicep' }
-    # Filter AVM Module Teams for Bicep Resource Modules
-    $filterAvmBicepResGhTeams = $filterAvmBicepGhTeams | Where-Object { $_.name -like '*res-*' }
-    # Filter AVM Module Teams for Bicep Resource Modules Owners
-    $filterAvmBicepResGhTeamsOwners = $filterAvmBicepResGhTeams | Where-Object { $_.name -like '*owners-*' }
-    # Filter AVM Module Teams for Bicep Pattern Modules
-    $filterAvmBicepPtnGhTeams = $filterAvmBicepGhTeams | Where-Object { $_.name -like '*ptn-*' }
-    # Filter AVM Module Teams for Terraform
-    $filterAvmTfGhTeams = $filterAvmGhTeams | Where-Object { $_.name -like '*tf' }
-    # Filter AVM Module Teams for Terraform Resource Modules
-    $filterAvmTfResGhTeams = $filterAvmTfGhTeams | Where-Object { $_.name -like '*res-*' }
-    # Filter AVM Module Teams for Terraform Resource Modules Owners
-    $filterAvmTfResGhTeamsOwners = $filterAvmTfResGhTeams | Where-Object { $_.name -like '*owners-*' }
-    # Filter AVM Module Teams for Terraform Pattern Modules
-    $filterAvmTfPtnGhTeams = $filterAvmTfGhTeams | Where-Object { $_.name -like '*ptn-*' }
-
-    switch ($TeamFilter) {
-        'AllTeams' { return $filterAvmGhTeams }
-        'AllResource' { return $filterAvmResGhTeams }
-        'AllPattern' { return $filterAvmPtnGhTeams }
-        'AllBicep' { return $filterAvmBicepGhTeams }
-        'AllBicepResourceOwners' { return $filterAvmBicepResGhTeamsOwners }
-        'AllBicepResource' { return $filterAvmBicepResGhTeams }
-        'AllBicepPattern' { return $filterAvmBicepPtnGhTeams }
-        'AllTerraform' { return $filterAvmTfGhTeams }
-        'AllTerraformResource' { return $filterAvmTfResGhTeams }
-        'AllTerraformResourceOwners' { return $filterAvmTfResGhTeamsOwners }
-        'AllTeraformPattern' { return $filterAvmTfPtnGhTeams }
-    }
-}
-
-Function Compare-BicepOwnersTeams {
-
-    $csvdata = Get-AvmCsv -ModuleIndex Bicep-Resource
-
-    $ghTeamData = Get-GitHubTeams -TeamFilter AllBicepResourceOwners
-
-    # Iterate through each object in $csv
-    foreach ($module in $csvdata) {
-        # Assume no match is found initially
-        $matchFound = $false
-
-        # Check each object in $ghTeam for a match
-        foreach ($ghTeam in $ghTeamData) {
-            if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
-                # If a match is found, set flag to true and break out of the loop
-                $matchFound = $true
-                Write-Output "Match found for: $($module.ModuleOwnersGHTeam)"
-                break
-            }
-        }
-
-        # If no match was found, output the item from $csv
-        if (-not $matchFound) {
-            Write-Error "No match found for: $($module.ModuleOwnersGHTeam), Current Owner is $($module.PrimaryModuleOwnerGHHandle)"
-        }
-    }
-}
-
-Function Compare-TerraformOwnersTeams {
-
-    $csvdata = Get-AvmCsv Terraform-Resource
-
-    $ghTeamData = Get-GitHubTeams -TeamFilter AllTerraformResourceOwners
-
-    # Iterate through each object in $csv
-    foreach ($module in $csvdata) {
-        # Assume no match is found initially
-        $matchFound = $false
-
-        # Check each object in $ghTeam for a match
-        foreach ($ghTeam in $ghTeamData) {
-            if ($module.ModuleOwnersGHTeam -eq $ghTeam.name) {
-                # If a match is found, set flag to true and break out of the loop
-                $matchFound = $true
-                Write-Output "Match found for: $($module.ModuleOwnersGHTeam)"
-                break
-            }
-        }
-
-        # If no match was found, output the item from $csv
-        if (-not $matchFound) {
-            Write-Error "No match found for: $($module.ModuleOwnersGHTeam), Current Owner in $($module.PrimaryModuleOwnerGHHandle)"
-        }
-    }
-}
-
 function Set-Issue {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param (
@@ -197,19 +70,30 @@ function Set-Issue {
         [string] $IssueUrl
     )
 
-    $issue = gh issue view $IssueUrl.Replace('api.','').Replace('repos/','') --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
-    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim()
+    $issue = gh issue view $IssueUrl.Replace('api.','').Replace('repos/','') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ','')
     $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
     $module = Get-AvmCsv -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    $reply = @"
+@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
+
+A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+"@
     
-    if ($PSCmdlet.ShouldProcess("Issue [$issue.title]", 'Add comment')) {
-        # assign issue & add label
-        gh issue edit $issue.url --add-assignee $module.ModuleOwnersGHTeam --add-label "Needs: Triage :mag:" --repo $Repo
+    if ($PSCmdlet.ShouldProcess("Issue [$issue.title]", 'assign, add comments and labels')) {
+        # add labels
+        gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
+        gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
         # write comment
-        gh issue comment $issue.url --body "Work todo" --repo $Repo
+        gh issue comment $issue.url --body $reply --repo $Repo
+        # assign owner
+        $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+
+        if ($null -eq $assign) {
+            $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
+            gh issue comment $issue.url --body $reply --repo $Repo
+        }
     }
 
-    # Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
-    # Write-Verbose ('[{0}] issue(s){1} commented' -f $issuesCommented, $($WhatIfPreference ? ' would have been' : ''))
-    # Write-Verbose ('[{0}] issue(s){1} closed' -f $issuesClosed, $($WhatIfPreference ? ' would have been' : ''))
+    Write-Verbose ('issue {0}{1} updated' -f $issue.title, $($WhatIfPreference ? ' would have been' : ''))
 }
