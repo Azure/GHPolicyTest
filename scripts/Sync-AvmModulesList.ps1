@@ -60,6 +60,8 @@ function Sync-AvmModulesList {
   $newWorkflowFileLines | Out-File -FilePath $workflowFilePath
 
   # save changes to repo
+  git config --global user.email "bot@contoso.com"
+  git config --global user.name "Github Bot"
   git add .
   git commit -m "Updating module list"
   git push
