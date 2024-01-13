@@ -1,0 +1,33 @@
+name: "avm.platform.sync-avm-modules-list"
+
+on:
+  schedule:
+    - cron: "30 4 * * *" # Every day at 4:30 am
+  workflow_dispatch:
+
+jobs:
+  sync-avm-modules-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        name: sync avm modules list
+        shell: pwsh
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
+
+          $functionInput = @{
+            RepositoryOwner = '${{ github.repository_owner }}'
+            RepositoryName  = '${{ github.event.repository.name }}'
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Sync-AvmModulesList @functionInput -Verbose

@@ -1,5 +1,5 @@
 # Workflow for notifying and assigning issues on creation
-name: Issue Creation - notify and assign team
+name: avm.platform.set-avm-github-issue-owner-config
 
 on:
   issues:
@@ -22,6 +22,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'scripts' 'Get-AvmCsvData.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'scripts' 'Set-AvmGitHubIssueOwnerConfig.ps1')
 
           $functionInput = @{
