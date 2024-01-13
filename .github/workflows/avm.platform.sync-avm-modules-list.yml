@@ -19,8 +19,8 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'scripts' 'Get-AvmCsvData.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'scripts' 'Sync-AvmModulesList.ps1')
 
           $functionInput = @{
             RepositoryOwner = '${{ github.repository_owner }}'
