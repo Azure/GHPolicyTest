@@ -5,9 +5,6 @@ Updating the module names list in the issue template
 .DESCRIPTION
 CSV data for moules and pattern is loaded and overwrites the list in the issue template. The changes are then commited to the repository.
 
-.PARAMETER Repo
-Repository name according to GitHub (owner/name)
-
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
 
@@ -19,11 +16,7 @@ Will be triggered by the workflow avm.platform.sync-avm-modules-list.yml
 #>
 function Sync-AvmModulesList {
   param (
-    [Parameter(Mandatory = $true)]
-    [string] $Repo,
-
     [Parameter(Mandatory = $false)]
-    # [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
     [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.FullName
   )
 
@@ -36,8 +29,8 @@ function Sync-AvmModulesList {
   # build new strings
   $prefix = '        - "'
   $postfix = '"'
-  $moduleLines = $modules | ForEach-Object { $prefix + $_.ModuleName + $postfix }
-  $patternLines = $patterns | ForEach-Object { $prefix + $_.ModuleName + $postfix }
+  $newModuleLines = $modules | ForEach-Object { $prefix + $_.ModuleName + $postfix }
+  $newPatternLines = $patterns | ForEach-Object { $prefix + $_.ModuleName + $postfix }
 
   # parse workflow file
   $workflowFileLines = Get-Content $workflowFilePath
@@ -55,14 +48,10 @@ function Sync-AvmModulesList {
     }
   }
 
-  # build new workflow file
-  $newWorkflowFileLines = $workflowFileLines[0..$startIndex] + $moduleLines + $patternLines + $workflowFileLines[$endIndex..$workflowFileLines.Count]
-  $newWorkflowFileLines | Out-File -FilePath $workflowFilePath
+  $oldLines = $workflowFileLines[($startIndex + 1)..($endIndex - 1)]
+  $newLines = $newModuleLines + $newPatternLines
 
-  # save changes to repo
-  git config --global user.email "bot@contoso.com"
-  git config --global user.name "Github Bot"
-  git add .
-  git commit -m "Updating module list"
-  git push
+  if ($oldLines -ne $newLines) {
+    gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body "$newLines" --label "Needs: Attention :wave:" --repo $Repo
+  }
 }
