@@ -50,8 +50,9 @@ function Sync-AvmModulesList {
 
   $oldLines = $workflowFileLines[($startIndex + 1)..($endIndex - 1)]
   $newLines = $newModuleLines + $newPatternLines
+  $body = $newLines -join([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
-    gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body ($newLines -join([Environment]::NewLine)) --label "Needs: Attention :wave:" --repo $Repo
+    gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body $body --label "Needs: Attention :wave:" --repo $Repo
   }
 }
