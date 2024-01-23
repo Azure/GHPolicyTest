@@ -66,7 +66,7 @@ function Sync-AvmModulesList {
     $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
     $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
-    if ($issues.title -notcontains $issueName) {
+    if ($issues.title -notcontains $title) {
       gh issue create --title $title --body $body --label $label --repo $Repo
     }
   }
