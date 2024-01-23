@@ -23,8 +23,11 @@ function Sync-AvmModulesList {
     [string] $Repo,
 
     [Parameter(Mandatory = $false)]
-    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.FullName
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
+
+  # Loading helper functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
 
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
@@ -44,19 +47,19 @@ function Sync-AvmModulesList {
   $endIndex = 0
 
   for ($lineNumber = 0; $lineNumber -lt $workflowFileLines.Count; $lineNumber++) {
-    if ($startIndex -gt 0 -and (-not $workflowFileLines[$lineNumber].StartsWith('        - "avm/'))) {
+    if ($startIndex -gt 0 -and (-not ($workflowFileLines[$lineNumber]).Trim().StartsWith('- "avm/'))) {
       $endIndex = $lineNumber
       break
     }
 
-    if ($workflowFileLines[$lineNumber] -eq '        - "Other, as defined below..."') {
+    if (($workflowFileLines[$lineNumber]).Trim() -eq '- "Other, as defined below..."') {
       $startIndex = $lineNumber
     }
   }
 
   $oldLines = $workflowFileLines[($startIndex + 1)..($endIndex - 1)]
   $newLines = $newModuleLines + $newPatternLines
-  $body = $newLines -join([Environment]::NewLine)
+  $body = $newLines -join ([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
     gh issue create --title "[AVM] Module/pattern list is not in sync with CSV file" --body $body --label "Needs: Attention :wave:" --repo $Repo
