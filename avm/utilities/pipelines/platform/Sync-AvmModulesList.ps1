@@ -67,7 +67,29 @@ function Sync-AvmModulesList {
     $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {
-      gh issue create --title $title --body $body --label $label --repo $Repo
-    }
+      $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
+      $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
+
+      $project = gh api graphql -f query='
+            query($organization: String! $number: Int!){
+              organization(login: $organization){
+                projectV2(number: $number) {
+                  id
+                }
+              }
+            }' -f organization="Azure" -F number=364 | ConvertFrom-Json -Depth 10
+
+      $bugBoardId = $project.data.organization.projectV2.id
+
+      gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) {
+              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
+                item {
+                  id
+                }
+              }
+            }' -f project=$bugBoardId -f issue=$issueId
+    } --jq '.data.addProjectV2ItemById.projectV2Item.id'
   }
+}
 }
