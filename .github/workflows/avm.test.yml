@@ -20,6 +20,9 @@ jobs:
           $repo = 'Azure/GHPolicyTest'
           $issueUrl = gh issue create --title $title --body $body --repo $Repo
           $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
+          Write-Host '#####'
+          Write-Host $issueUrl
+          Write-Host $issueId
 
           $project = gh api graphql -f query='
             query($organization: String! $number: Int!){
