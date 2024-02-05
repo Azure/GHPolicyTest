@@ -17,7 +17,8 @@ jobs:
         run: |
           $title = 'Test issue'
           $body = 'test body'
-          $repo = 'Azure/GHPolicyTest'
+          $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+          gh issue create --title $title --body $body --repo $Repo
           $issueUrl = gh issue create --title $title --body $body --repo $Repo
           $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
           Write-Host '#####'
