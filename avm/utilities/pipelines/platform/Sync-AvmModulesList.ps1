@@ -77,7 +77,7 @@ function Sync-AvmModulesList {
                   id
                 }
               }
-            }' -f organization="Azure" -F number=364 | ConvertFrom-Json -Depth 10
+            }' -f organization="Azure" -F number=614 | ConvertFrom-Json -Depth 10
 
       $bugBoardId = $project.data.organization.projectV2.id
 
