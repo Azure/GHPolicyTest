@@ -75,7 +75,9 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
     }
 
     if ([String]::IsNullOrEmpty($assign)) {
-      $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
+      # $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
+      $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response within 5 business days."
+      
       if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
         gh issue comment $issue.url --body $reply --repo $Repo
       }
