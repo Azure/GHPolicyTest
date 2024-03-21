@@ -222,7 +222,8 @@ configuration:
               reply: |
                 **NOTE**: when triaging this issue, the "Needs: Triage 🔍" label must be removed.
 
-                > This message was posted as per ITA25.
+                > This message was posted as per [ITA25](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita25).
+                >
                 > To turn off this alarm, please remove the "Needs: Triage 🔍" label from the issue.
                 >   - bullet1
                 >   - bullet2
