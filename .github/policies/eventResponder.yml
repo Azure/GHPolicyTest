@@ -220,4 +220,4 @@ configuration:
         then:
           - addReply:
               reply: |
-                Note: when triaging this issue, the "<mark style="background-color:#FBCA04;">Needs: Triage 🔍</mark>" label must be removed.
+                **NOTE**: when triaging this issue, the "<mark style="background-color:#FBCA04;">Needs: Triage 🔍</mark>" label must be removed.
