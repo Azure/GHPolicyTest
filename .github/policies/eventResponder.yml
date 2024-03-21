@@ -224,3 +224,5 @@ configuration:
 
                 > This message was posted as per ITA25.
                 > To turn off this alarm, please remove the "Needs: Triage 🔍" label from the issue.
+                >   - bullet1
+                >   - bullet2
