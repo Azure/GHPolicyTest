@@ -218,8 +218,6 @@ configuration:
           - hasLabel:
               label: 'Needs: Triage :mag:'
         then:
-          - assignTo:
-              author: true
           - addReply:
               reply: |
-                Note: when triaging this issue, the 'Needs: Triage :mag:' label must be removed.
+                Note: when triaging this issue, the "<mark style="background-color:#FBCA04;">Needs: Triage 🔍</mark>" label must be removed.
