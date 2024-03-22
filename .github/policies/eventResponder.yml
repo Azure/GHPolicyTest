@@ -289,7 +289,8 @@ configuration:
               label: "Type: Feature Request :heavy_plus_sign:"
           - addReply:
               reply: |
-                > **NOTE**: The "Type: Feature Request :heavy_plus_sign:" label was added as per [ITA20](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita20).
+                > [!NOTE]
+                > The "Type: Feature Request :heavy_plus_sign:" label was added as per [ITA20](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita20).
 
       - description: 'ITA21 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
         if:
