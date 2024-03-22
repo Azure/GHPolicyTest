@@ -37,12 +37,8 @@ configuration:
 
       - description: "ITA01BCP.2 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
         frequencies:
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
+          - hourly:
+              hour: 1
         filters:
           - isIssue
           - isOpen
@@ -50,8 +46,6 @@ configuration:
               label: "Needs: Triage :mag:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
-          - noActivitySince:
-              days: 3
         actions:
           - mentionUsers:
               mentionees:
@@ -99,12 +93,8 @@ configuration:
 
       - description: "ITA02BCP.2 - Label and comment issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue."
         frequencies:
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
+          - hourly:
+              hour: 1
         filters:
           - isIssue
           - isOpen
@@ -112,8 +102,6 @@ configuration:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
-          - noActivitySince:
-              days: 3
         actions:
           - mentionUsers:
               mentionees:
@@ -133,21 +121,8 @@ configuration:
 
       - description: "ITA03BCP - Label and mention Bicep PG to security issues that have not had any activity for 5 business days."
         frequencies:
-          - weekday:
-              day: Monday
-              time: 12:00
-          - weekday:
-              day: Tuesday
-              time: 12:00
-          - weekday:
-              day: Wednesday
-              time: 12:00
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
+          - hourly:
+              hour: 1
         filters:
           - isIssue
           - isOpen
@@ -159,8 +134,6 @@ configuration:
               label: "Status: Response Overdue :triangular_flag_on_post:"
           - hasLabel:
               label: "Type: AVM :a: :v: :m:"
-          - noActivitySince:
-              days: 7
         actions:
           - mentionUsers:
               mentionees:
@@ -181,14 +154,12 @@ configuration:
       - description: "ITA04 - Label issues that have been marked as requiring author feedback but have not had any activity for 4 days."
         frequencies:
           - hourly:
-              hour: 3
+              hour: 1
         filters:
           - isIssue
           - isOpen
           - hasLabel:
               label: "Needs: Author Feedback :ear:"
-          - noActivitySince:
-              days: 4
           - isNotLabeledWith:
               label: "Status: No Recent Activity :zzz:"
         actions:
@@ -210,7 +181,7 @@ configuration:
       - description: 'ITA05A - Close issues that have been marked as requiring author feedback but have not had any activity for 3 days, unless it''s been marked with the "Status long term" label.'
         frequencies:
           - hourly:
-              hour: 3
+              hour: 1
         filters:
           - isIssue
           - isOpen
@@ -220,8 +191,6 @@ configuration:
               label: "Status: No Recent Activity :zzz:"
           - isNotLabeledWith:
               label: "Needs: Module Owner :mega:"
-          - noActivitySince:
-              days: 3
         actions:
           - addReply:
               reply: |
@@ -237,7 +206,7 @@ configuration:
       - description: 'ITA05B - Close issues that have been marked as requiring author feedback but have not had any activity for 3 days, unless it''s been marked with the "Status long term" label.'
         frequencies:
           - hourly:
-              hour: 3
+              hour: 1
         filters:
           - isIssue
           - isOpen
@@ -247,8 +216,6 @@ configuration:
               label: "Status: No Recent Activity :zzz:"
           - isNotLabeledWith:
               label: "Status: Long Term :hourglass_flowing_sand:"
-          - noActivitySince:
-              days: 3
         actions:
           - addReply:
               reply: |
