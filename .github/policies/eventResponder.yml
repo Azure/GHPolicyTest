@@ -19,9 +19,9 @@ configuration:
               label: "Needs: Triage :mag:"
           - addReply:
               reply: |
-                > [!WARNING]
+                > [!IMPORTANT]
                 > **The "Needs: Triage :mag:" label must be removed as part of the triage process (when the issue/PR is first responded to)!**
-                
+
                 > [!NOTE]
                 > This label was added as per [ITA06](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita06).
 
