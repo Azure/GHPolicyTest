@@ -105,7 +105,7 @@ function Set-AvmGithubIssueForWorkflow {
             # get CSV data
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
-            if (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle))) {
+            if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $comment = @"
 > [!WARNING]
 > @$($module.ModuleOwnersGHTeam), this workflow has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
