@@ -49,32 +49,34 @@ function Set-AvmGitHubIssueOwnerConfig {
     # get CSV data
     $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
+    # new/unknown module
+    if ($null -eq $module) {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-
-
-    # scenario 1: module has owner
-
-    # scenario 2: module is orphaned
-    # module is orphaned (get from CSV)
-    #  **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
-    # next line: IMPORTANT block
-    #  Please note, that this module is currently oprhaned. The @avmcoreteamtechnical, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
-
-    #scenario 3: module is neither available or orphanend > module does not exist yet, we look into it. please file a new module proposal aka.ms/avm/moduleproposal
-
-
-
-
-    if ([string]::IsNullOrEmpty($module)) {
-      throw "Module $moduleName was not found in $moduleIndex CSV file."
+> [!IMPORTANT]
+> The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
+"@
     }
+    # orphaned module
+    elseif ($module.ModuleStatus -eq "Module Orphaned :eyes:")
+    {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-    $reply = @"
+> [!IMPORTANT]
+> Please note, that this module is currently oprhaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
+"@
+    }
+    # existing module
+    else {
+      $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
 > A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
 "@
+    }
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
       gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
