@@ -120,7 +120,7 @@ function Set-AvmGithubIssueForWorkflow {
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
-  
+
                   gh issue comment $issue.url --body $reply --repo $Repo
                 }
               }
