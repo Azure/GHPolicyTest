@@ -8,6 +8,9 @@ For the given issue, the module owner (according to the AVM CSV file) will be no
 .PARAMETER Repo
 Repository name according to GitHub (owner/name)
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .PARAMETER IssueUrl
 The full GitHub URL to the issue
 
@@ -50,15 +53,11 @@ function Set-AvmGitHubIssueOwnerConfig {
     }
 
     $reply = @"
-@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+> [!IMPORTANT]
+> A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
 "@
-
-    if ($PSCmdlet.ShouldProcess("attention label to issue [$($issue.title)]", 'Add')) {
-      # add labels
-      gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
-    }
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
       gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
@@ -75,10 +74,12 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
     }
 
     if ([String]::IsNullOrEmpty($assign)) {
-      # $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
-      $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response within 5 business days."
-      
       if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+        $reply = @"
+> [!WARNING]
+> This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support)."
+"@
+
         gh issue comment $issue.url --body $reply --repo $Repo
       }
     }
