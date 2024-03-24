@@ -95,8 +95,8 @@ function Set-AvmGithubIssueForWorkflow {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
           $ProjectNumber = 538 # AVM Core Team
           $comment = @"
-> [!WARNING]
-> @Azure/avm-core-team-technical-bicep, this workflow has failed. Please investigate the failed workflow run.
+> [!IMPORTANT]
+> @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
@@ -108,15 +108,15 @@ function Set-AvmGithubIssueForWorkflow {
             if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # Module owners
               $comment = @"
-> [!WARNING]
-> @$($module.ModuleOwnersGHTeam), this workflow has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
+> [!IMPORTANT]
+> @$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
               # assign owner
               $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
         
               if ([String]::IsNullOrEmpty($assign)) {
                 if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-                  $reply = @"
+                  $comment = @"
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
