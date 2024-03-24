@@ -2,6 +2,9 @@
 .SYNOPSIS
 Adds an existing GitHub issue to an existing GitHub project (the new type, not the classic ones)
 
+.DESCRIPTION
+Adds an existing GitHub issue to an existing GitHub project (the new type, not the classic ones)
+
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
