@@ -6,7 +6,7 @@ If module list is not in sync with CSV file, an issue and a PR with the necessar
 CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue and a PR with the necessary changes is created
 
 .PARAMETER Repo
-Repository name according to GitHub (owner/name)
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
@@ -28,6 +28,7 @@ function Sync-AvmModulesList {
 
   # Loading helper functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Add-GithubIssueToProject.ps1')
 
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
@@ -62,15 +63,16 @@ function Sync-AvmModulesList {
   $body = $newLines -join ([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
-    $title = "[AVM chore] Module(s) missing from AVM Module Issue template"
+    $title = "[AVM core] Module(s) missing from AVM Module Issue template"
     $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
     $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {
       # create issue
       $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
-      # TODO: add issue to project
-      $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
+      # add issue to project
+      $ProjectNumber = 538 # AVM Core Team
+      Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
       # TODO: clone repo
       # TODO: change code
       # TODO: create PR and link issue

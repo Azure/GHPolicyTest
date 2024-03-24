@@ -6,7 +6,7 @@ Check for failing pipelines and create issues for those, that are failing.
 If a pipeline fails, a new issue will be created, with a link to the failed pipeline. If the issue is already existing, a comment will be added, if a new run failed (with the link for the new failed run). If a pipeline run succeeds and an issue is open for the failed run, it will be closed (and a link to the successful run is added to the issue).
 
 .PARAMETER Repo
-Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>"
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
@@ -49,6 +49,7 @@ function Set-AvmGithubIssueForWorkflow {
 
   # Loading helper functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Add-GithubIssueToProject.ps1')
 
   $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
@@ -92,8 +93,7 @@ function Set-AvmGithubIssueForWorkflow {
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
-          # TODO: add issue to project
-          $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
+          $ProjectNumber = 538 # AVM Core Team
           $comment = @"
 > [!WARNING]
 > @Azure/avm-core-team-technical-bicep, this workflow has failed. Please investigate the failed workflow run.
@@ -106,6 +106,7 @@ function Set-AvmGithubIssueForWorkflow {
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
             if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+              $ProjectNumber = 566 # Module owners
               $comment = @"
 > [!WARNING]
 > @$($module.ModuleOwnersGHTeam), this workflow has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
@@ -113,6 +114,9 @@ function Set-AvmGithubIssueForWorkflow {
             }
           }
 
+          # add issue to project
+          Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+          # add comment
           gh issue comment $issueUrl --body $comment --repo $Repo
         }
 

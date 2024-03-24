@@ -6,13 +6,13 @@ Assigns issues to module owners and adds comments and labels
 For the given issue, the module owner (according to the AVM CSV file) will be notified in a comment and assigned to the issue
 
 .PARAMETER Repo
-Repository name according to GitHub (owner/name)
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
 
 .PARAMETER IssueUrl
-The full GitHub URL to the issue
+Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .EXAMPLE
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
