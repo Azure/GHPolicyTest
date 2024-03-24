@@ -48,7 +48,7 @@ function Set-AvmGithubIssueForWorkflow {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
 
   $issues = gh issue list --state open --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
   $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
@@ -102,6 +102,7 @@ function Set-AvmGithubIssueForWorkflow {
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
             $moduleName = $workflowRun.workflowName.Replace('.', '/')
             $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+            # get CSV data
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
             if (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle))) {

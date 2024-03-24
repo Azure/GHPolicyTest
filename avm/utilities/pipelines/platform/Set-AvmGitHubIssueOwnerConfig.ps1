@@ -34,7 +34,7 @@ function Set-AvmGitHubIssueOwnerConfig {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -46,7 +46,24 @@ function Set-AvmGitHubIssueOwnerConfig {
     }
 
     $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+    # get CSV data
     $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+
+
+
+
+    # scenario 1: module has owner
+
+    # scenario 2: module is orphaned
+    # module is orphaned (get from CSV)
+    #  **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+    # next line: IMPORTANT block
+    #  Please note, that this module is currently oprhaned. The @avmcoreteamtechnical, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
+
+    #scenario 3: module is neither available or orphanend > module does not exist yet, we look into it. please file a new module proposal aka.ms/avm/moduleproposal
+
+
+
 
     if ([string]::IsNullOrEmpty($module)) {
       throw "Module $moduleName was not found in $moduleIndex CSV file."
