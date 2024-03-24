@@ -111,6 +111,19 @@ function Set-AvmGithubIssueForWorkflow {
 > [!WARNING]
 > @$($module.ModuleOwnersGHTeam), this workflow has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
+              # assign owner
+              $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+        
+              if ([String]::IsNullOrEmpty($assign)) {
+                if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+                  $reply = @"
+> [!WARNING]
+> This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
+"@
+  
+                  gh issue comment $issue.url --body $reply --repo $Repo
+                }
+              }
             }
           }
 
