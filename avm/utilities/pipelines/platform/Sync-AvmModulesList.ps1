@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Updating the module names list in the issue template
+If module list is not in sync with CSV file, an issue and a PR with the necessary changes is created
 
 .DESCRIPTION
-CSV data for moules and pattern is loaded and overwrites the list in the issue template. The changes are then commited to the repository.
+CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue and a PR with the necessary changes is created
 
 .PARAMETER Repo
 Repository name according to GitHub (owner/name)
