@@ -92,11 +92,12 @@ function Set-AvmGithubIssueForWorkflow {
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
+          # TODO: add issue to project
+          $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
           $comment = @"
 > [!WARNING]
 > @Azure/avm-core-team-technical-bicep, this workflow has failed. Please investigate the failed workflow run.
 "@
-        }
 
           if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
             $moduleName = $workflowRun.workflowName.Replace('.', '/')
@@ -108,50 +109,50 @@ function Set-AvmGithubIssueForWorkflow {
 > [!WARNING]
 > @$($module.ModuleOwnersGHTeam), this workflow has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
-        }
-      }
-
-      gh issue comment $issueUrl --body $comment --repo $Repo
-    }
-
-    $issuesCreated++
-  }
-  else {
-    $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
-
-    if (-not $issue.body.Contains($failedrun)) {
-      if ($issue.comments.length -eq 0) {
-        if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
-          gh issue comment $issue.url --body $failedrun --repo $Repo
-        }
-
-        $issuesCommented++
-      }
-      else {
-        if (-not $issue.comments.body.Contains($failedrun)) {
-          if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
-            gh issue comment $issue.url --body $failedrun --repo $Repo
+            }
           }
 
-          $issuesCommented++
+          gh issue comment $issueUrl --body $comment --repo $Repo
+        }
+
+        $issuesCreated++
+      }
+      else {
+        $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
+
+        if (-not $issue.body.Contains($failedrun)) {
+          if ($issue.comments.length -eq 0) {
+            if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Add comment')) {
+              gh issue comment $issue.url --body $failedrun --repo $Repo
+            }
+
+            $issuesCommented++
+          }
+          else {
+            if (-not $issue.comments.body.Contains($failedrun)) {
+              if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
+                gh issue comment $issue.url --body $failedrun --repo $Repo
+              }
+
+              $issuesCommented++
+            }
+          }
         }
       }
     }
-  }
-}
-else {
-  $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
+    else {
+      $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
 
-  if ($issues.title -contains $issueName) {
-    $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
-    $successfulrun = "successful run: $($workflowRun.url)"
-    gh issue close $issue.url --comment $successfulrun --repo $Repo
-    $issuesClosed++
+      if ($issues.title -contains $issueName) {
+        $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
+        $successfulrun = "successful run: $($workflowRun.url)"
+        gh issue close $issue.url --comment $successfulrun --repo $Repo
+        $issuesClosed++
+      }
+    }
   }
-}
-}
 
-Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
-Write-Verbose ('[{0}] issue(s){1} commented' -f $issuesCommented, $($WhatIfPreference ? ' would have been' : ''))
-Write-Verbose ('[{0}] issue(s){1} closed' -f $issuesClosed, $($WhatIfPreference ? ' would have been' : ''))
+  Write-Verbose ('[{0}] issue(s){1} created' -f $issuesCreated, $($WhatIfPreference ? ' would have been' : ''))
+  Write-Verbose ('[{0}] issue(s){1} commented' -f $issuesCommented, $($WhatIfPreference ? ' would have been' : ''))
+  Write-Verbose ('[{0}] issue(s){1} closed' -f $issuesClosed, $($WhatIfPreference ? ' would have been' : ''))
 }
