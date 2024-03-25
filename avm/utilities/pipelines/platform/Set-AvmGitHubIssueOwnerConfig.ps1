@@ -6,10 +6,13 @@ Assigns issues to module owners and adds comments and labels
 For the given issue, the module owner (according to the AVM CSV file) will be notified in a comment and assigned to the issue
 
 .PARAMETER Repo
-Repository name according to GitHub (owner/name)
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
+
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
 
 .PARAMETER IssueUrl
-The full GitHub URL to the issue
+Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .EXAMPLE
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
@@ -31,7 +34,7 @@ function Set-AvmGitHubIssueOwnerConfig {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -43,21 +46,35 @@ function Set-AvmGitHubIssueOwnerConfig {
     }
 
     $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+    # get CSV data
     $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
-    if ([string]::IsNullOrEmpty($module)) {
-      throw "Module $moduleName was not found in $moduleIndex CSV file."
-    }
+    # new/unknown module
+    if ($null -eq $module) {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-    $reply = @"
-@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!
-
-A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+> [!IMPORTANT]
+> The module does not exist yet, we look into it. Please file a new module proposal under [AVM Module proposal](https://aka.ms/avm/moduleproposal).
 "@
+    }
+    # orphaned module
+    elseif ($module.ModuleStatus -eq "Module Orphaned :eyes:") {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
-    if ($PSCmdlet.ShouldProcess("attention label to issue [$($issue.title)]", 'Add')) {
-      # add labels
-      gh issue edit $issue.url --add-label "Needs: Attention :wave:" --repo $Repo
+> [!IMPORTANT]
+> Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
+"@
+    }
+    # existing module
+    else {
+      $reply = @"
+**@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
+
+> [!IMPORTANT]
+> A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleContributorsGHTeam) team will review it soon!
+"@
     }
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
@@ -69,17 +86,21 @@ A member of the @azure/$($module.ModuleOwnersGHTeam) or @azure/$($module.ModuleC
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
-      # assign owner
-      $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
-    }
+    if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+      if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
+        # assign owner
+        $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
+      }
 
-    if ([String]::IsNullOrEmpty($assign)) {
-      # $reply = "This issue couldn't be assigend to $($module.PrimaryModuleOwnerGHHandle), because no such users exists."
-      $reply = "This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response within 5 business days."
-      
-      if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
-        gh issue comment $issue.url --body $reply --repo $Repo
+      if ([String]::IsNullOrEmpty($assign)) {
+        if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
+          $reply = @"
+> [!WARNING]
+> This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
+"@
+
+          gh issue comment $issue.url --body $reply --repo $Repo
+        }
       }
     }
   }

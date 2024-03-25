@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
-Updating the module names list in the issue template
+If module list is not in sync with CSV file, an issue is created
 
 .DESCRIPTION
-CSV data for moules and pattern is loaded and overwrites the list in the issue template. The changes are then commited to the repository.
+CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue with the necessary changes is created
 
 .PARAMETER Repo
-Repository name according to GitHub (owner/name)
+Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
@@ -27,7 +27,8 @@ function Sync-AvmModulesList {
   )
 
   # Loading helper functions
-  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Add-GithubIssueToProject.ps1')
 
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
@@ -62,34 +63,16 @@ function Sync-AvmModulesList {
   $body = $newLines -join ([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
-    $title = "[AVM chore] Module(s) missing from AVM Module Issue template"
+    $title = "[AVM core] Module(s) missing from AVM Module Issue template"
     $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
     $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {
+      # create issue
       $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
-      $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
-
-      $project = gh api graphql -f query='
-            query($organization: String! $number: Int!){
-              organization(login: $organization){
-                projectV2(number: $number) {
-                  id
-                }
-              }
-            }' -f organization="Azure" -F number=614 | ConvertFrom-Json -Depth 10
-
-      $bugBoardId = $project.data.organization.projectV2.id
-
-      gh api graphql -f query='
-            mutation($project:ID!, $issue:ID!) {
-              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
-                item {
-                  id
-                }
-              }
-            }' -f project=$bugBoardId -f issue=$issueId
-    } --jq '.data.addProjectV2ItemById.projectV2Item.id'
+      # add issue to project
+      $ProjectNumber = 614
+      Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+    }
   }
-}
 }
