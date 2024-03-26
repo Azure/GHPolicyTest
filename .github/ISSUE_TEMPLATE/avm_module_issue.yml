@@ -26,6 +26,7 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
+        - ""
         - "Feature Request"
         - "Bug"
         - "Security Bug"
