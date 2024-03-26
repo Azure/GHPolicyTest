@@ -37,9 +37,8 @@ body:
     attributes:
       label: Module Name
       description: Which existing AVM module is this issue related to?
-      default: 0
       options:
-        - "Other, as defined below..."
+        - ""
         - "avm/res/aad/domain-service"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
