@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
 # Project
 
 > This repo has been populated by an initial template to help get you started. Please
