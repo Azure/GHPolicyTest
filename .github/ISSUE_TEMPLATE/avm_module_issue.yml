@@ -26,6 +26,7 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
+        - ""
         - "Feature Request"
         - "Bug"
         - "Security Bug"
@@ -38,7 +39,7 @@ body:
       label: Module Name
       description: Which existing AVM module is this issue related to?
       options:
-        - "Other, as defined below..."
+        - ""
         - "avm/res/aad/domain-service"
         - "avm/res/analysis-services/server"
         - "avm/res/api-management/service"
