@@ -6,12 +6,12 @@ Parses AVM module CSV file
 Depending on the parameter, the correct CSV file will be parsed and returned a an object
 
 .PARAMETER ModuleIndex
-Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
+Mandatory. Type of CSV file, that should be parsed ('Bicep-Resource', 'Bicep-Pattern')
 
 .EXAMPLE
-Next line will parse the AVM Bicep modules
 Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
 
+Parse the AVM Bicep modules
 #>
 Function Get-AvmCsvData {
   [CmdletBinding()]
@@ -32,7 +32,7 @@ Function Get-AvmCsvData {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepResourceUrl
       }
       catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
+        throw "Unable to retrieve CSV file - Check network connection."
       }
     }
     'Bicep-Pattern' {
@@ -40,7 +40,7 @@ Function Get-AvmCsvData {
         $unfilteredCSV = Invoke-WebRequest -Uri $BicepPatternUrl
       }
       catch {
-        Write-Error "Unable to retrieve CSV file - Check network connection."
+        throw "Unable to retrieve CSV file - Check network connection."
       }
     }
   }
@@ -51,9 +51,9 @@ Function Get-AvmCsvData {
   # Loop through each item in the filtered data
   foreach ($item in $formattedBicepFullCsv) {
     # Remove '@Azure/' from the ModuleOwnersGHTeam property
-    $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure/', ''
+    $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
     # Remove '@Azure/' from the ModuleContributorsGHTeam property
-    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure/', ''
+    $item.ModuleContributorsGHTeam = $item.ModuleContributorsGHTeam -replace '@Azure\/', ''
   }
 
   # Return the modified data
