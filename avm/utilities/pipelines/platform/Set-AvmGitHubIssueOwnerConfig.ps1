@@ -49,6 +49,9 @@ function Set-AvmGitHubIssueOwnerConfig {
     # get CSV data
     $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
+
+    # TODO: add res or ptn label
+
     # new/unknown module
     if ($null -eq $module) {
       $reply = @"

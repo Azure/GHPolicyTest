@@ -93,7 +93,7 @@ function Set-AvmGithubIssueForWorkflow {
       if ($issues.title -notcontains $issueName) {
         if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
           $issueUrl = gh issue create --title "$issueName" --body "$failedrun" --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo $Repo
-          $ProjectNumber = 538 # AVM Core Team
+          $ProjectNumber = 538 # AVM - Issue Triage
           $comment = @"
 > [!IMPORTANT]
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
@@ -106,7 +106,7 @@ function Set-AvmGithubIssueForWorkflow {
             $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
 
             if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
-              $ProjectNumber = 566 # Module owners
+              $ProjectNumber = 566 # AVM - Module Issues
               $comment = @"
 > [!IMPORTANT]
 > @$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
