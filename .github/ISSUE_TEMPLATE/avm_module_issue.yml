@@ -2,7 +2,6 @@
 # description: Want to request a new Module feature or report a bug? Let us know!
 # title: "[AVM Module Issue]: "
 # labels: ["Type: AVM :a: :v: :m:", "Needs: Triage :mag:"]
-# projects: ["Azure/566"]
 # body:
 #   - type: markdown
 #     attributes:
