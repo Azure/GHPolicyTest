@@ -20,10 +20,10 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-      - env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        name: sync avm modules list
+      - name: sync avm modules list
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
