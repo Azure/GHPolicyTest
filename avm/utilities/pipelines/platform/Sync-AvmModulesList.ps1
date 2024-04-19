@@ -65,7 +65,7 @@ function Sync-AvmModulesList {
   if ($oldLines -ne $newLines) {
     $title = "[AVM core] Module(s) missing from AVM Module Issue template"
     $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
-    $issues = gh issue list --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
+    $issues = gh issue list --limit 500 --state open --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {
       # create issue

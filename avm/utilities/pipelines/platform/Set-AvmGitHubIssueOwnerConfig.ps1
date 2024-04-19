@@ -35,15 +35,12 @@ function Set-AvmGitHubIssueOwnerConfig {
 
   # Loading helper functions
   . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
     $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
-
-    if ([string]::IsNullOrEmpty($moduleName)) {
-      throw 'No valid module name was found in the issue.'
-    }
 
     $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
     # get CSV data
