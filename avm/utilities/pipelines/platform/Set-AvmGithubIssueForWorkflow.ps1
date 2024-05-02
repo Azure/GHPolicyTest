@@ -26,7 +26,7 @@ Set-AvmGithubIssueForWorkflow -Repo 'owner/repo01' -LimitNumberOfRuns 100 -Limit
 Check the last 100 workflow runs in the repository 'owner/repo01' that happened in the last 2 days. If the workflow name is 'Pipeline 01', then ignore the workflow run.
 
 .NOTES
-Will be triggered by the workflow avm.platform.manage-workflow-issue.yml
+Will be triggered by the workflow platform.manage-workflow-issue.yml
 #>
 function Set-AvmGithubIssueForWorkflow {
   [CmdletBinding(SupportsShouldProcess)]
@@ -65,7 +65,7 @@ function Set-AvmGithubIssueForWorkflow {
       $runId = $run.url.Split('/') | Select-Object -Last 1
       $runDetails = gh run view $runId --json 'conclusion,number' --repo $Repo | ConvertFrom-Json -Depth 100
 
-      if ($run.workflowName.StartsWith("avm.")) {
+      if ($run.workflowName.StartsWith('avm.')) {
         if (-not $workflowRuns.ContainsKey($run.workflowName) -or $runDetails.number -gt $workflowRuns[$run.workflowName].number) {
           $workflowRun = New-Object PSObject -Property @{
             workflowName = $run.workflowName
@@ -76,8 +76,7 @@ function Set-AvmGithubIssueForWorkflow {
 
           if (-not $workflowRuns.ContainsKey($run.workflowName)) {
             $workflowRuns.Add($run.workflowName, $workflowRun)
-          }
-          else {
+          } else {
             $workflowRuns[$run.workflowName] = $workflowRun
           }
         }
@@ -100,13 +99,13 @@ function Set-AvmGithubIssueForWorkflow {
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@
 
-          if ($workflowRun.workflowName -match "avm.(?:res|ptn)") {
+          if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
             $moduleName = $workflowRun.workflowName.Replace('.', '/')
-            $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+            $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
             # get CSV data
-            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
-            if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+            if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # AVM - Module Issues
               $comment = @"
 > [!IMPORTANT]
@@ -114,7 +113,7 @@ function Set-AvmGithubIssueForWorkflow {
 "@
               # assign owner
               $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
-        
+
               if ([String]::IsNullOrEmpty($assign)) {
                 if ($PSCmdlet.ShouldProcess("missing user comment to issue [$($issue.title)]", 'Add')) {
                   $comment = @"
@@ -135,8 +134,7 @@ function Set-AvmGithubIssueForWorkflow {
         }
 
         $issuesCreated++
-      }
-      else {
+      } else {
         $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
 
         if (-not $issue.body.Contains($failedrun)) {
@@ -146,8 +144,7 @@ function Set-AvmGithubIssueForWorkflow {
             }
 
             $issuesCommented++
-          }
-          else {
+          } else {
             if (-not $issue.comments.body.Contains($failedrun)) {
               if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
                 gh issue comment $issue.url --body $failedrun --repo $Repo
@@ -158,8 +155,7 @@ function Set-AvmGithubIssueForWorkflow {
           }
         }
       }
-    }
-    else {
+    } else {
       $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
 
       if ($issues.title -contains $issueName) {
