@@ -346,7 +346,7 @@ configuration:
                 > [!NOTE]
                 > The "Status: In PR :point_right:" label was removed as per [ITA23](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita23).
       
-      - description: 'ITA10 - When #CloseThis is used in an issue, close the issue.'
+      - description: 'ITA25 - When #CloseThis is used in an issue, close the issue.'
         if:
           - or:
               - payloadType: Issue_Comment
