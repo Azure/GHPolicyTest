@@ -15,7 +15,7 @@ Optional. Path to the root of the repository.
 Sync-AvmModulesList -Repo 'Azure/bicep-registry-modules'
 
 .NOTES
-Will be triggered by the workflow avm.platform.sync-avm-modules-list.yml
+Will be triggered by the workflow platform.sync-avm-modules-list.yml
 #>
 function Sync-AvmModulesList {
   param (
@@ -33,8 +33,8 @@ function Sync-AvmModulesList {
   $workflowFilePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
 
   # get CSV data
-  $modules = Get-AvmCsvData -ModuleIndex "Bicep-Resource" | Select-Object -Property "ModuleName"
-  $patterns = Get-AvmCsvData -ModuleIndex "Bicep-Pattern" | Select-Object -Property "ModuleName"
+  $modules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Select-Object -Property 'ModuleName'
+  $patterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Select-Object -Property 'ModuleName'
 
   # build new strings
   $prefix = '        - "'
@@ -63,8 +63,8 @@ function Sync-AvmModulesList {
   $body = $newLines -join ([Environment]::NewLine)
 
   if ($oldLines -ne $newLines) {
-    $title = "[AVM core] Module(s) missing from AVM Module Issue template"
-    $label = "Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:"
+    $title = '[AVM core] Module(s) missing from AVM Module Issue template'
+    $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:'
     $issues = gh issue list --state open --limit 500 --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {

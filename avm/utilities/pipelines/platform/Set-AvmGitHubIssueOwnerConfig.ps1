@@ -18,7 +18,7 @@ Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-reg
 Set-AvmGitHubIssueOwnerConfig -Repo 'Azure/bicep-registry-modules' -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
-Will be triggered by the workflow avm.platform.set-avm-github-issue-owner-config.yml
+Will be triggered by the workflow platform.set-avm-github-issue-owner-config.yml
 #>
 function Set-AvmGitHubIssueOwnerConfig {
   [CmdletBinding(SupportsShouldProcess)]
@@ -40,11 +40,15 @@ function Set-AvmGitHubIssueOwnerConfig {
   $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
   if ($issue.title.StartsWith('[AVM Module Issue]')) {
-    $moduleName = ($issue.body.Split("`n") -match "avm/(?:res|ptn)")[0].Trim().Replace(' ', '')
+    $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn)')[0].Trim().Replace(' ', '')
 
-    $moduleIndex = $moduleName.StartsWith("avm/res") ? "Bicep-Resource" : "Bicep-Pattern"
+    if ([string]::IsNullOrEmpty($moduleName)) {
+      throw 'No valid module name was found in the issue.'
+    }
+
+    $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
     # get CSV data
-    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -eq $moduleName
+    $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
     # new/unknown module
     if ($null -eq $module) {
@@ -56,7 +60,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
     }
     # orphaned module
-    elseif ($module.ModuleStatus -eq "Module Orphaned :eyes:") {
+    elseif ($module.ModuleStatus -eq 'Module Orphaned :eyes:') {
       $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -79,7 +83,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
 
     if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
-      gh issue edit $issue.url --add-label ($moduleIndex -eq "Bicep-Resource" ? "Class: Resource Module :package:" : "Class: Pattern Module :package:") --repo $Repo
+      gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo
     }
 
     if ($PSCmdlet.ShouldProcess("reply comment to issue [$($issue.title)]", 'Add')) {
@@ -87,7 +91,7 @@ function Set-AvmGitHubIssueOwnerConfig {
       gh issue comment $issue.url --body $reply --repo $Repo
     }
 
-    if (($module.ModuleStatus -ne "Module Orphaned :eyes:") -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+    if (($module.ModuleStatus -ne 'Module Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
       if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
         # assign owner
         $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
