@@ -142,7 +142,8 @@ $([Environment]::NewLine)
     $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 
     $body = @"
-The file '.github/ISSUE_TEMPLATE/avm_module_issue.yml' which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under 'https://aka.ms/avm/index/bicep/res/csv' and 'https://aka.ms/avm/index/bicep/ptn/csv'. These CSV files are the single source of truth regarding published modules. Please update the 'avm_module_issue.yml' accordingly. Please see the following differences that were found.
+> [!IMPORTANT]
+> The file '.github/ISSUE_TEMPLATE/avm_module_issue.yml' which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under 'https://aka.ms/avm/index/bicep/res/csv' and 'https://aka.ms/avm/index/bicep/ptn/csv'. These CSV files are the single source of truth regarding published modules. Please update the 'avm_module_issue.yml' accordingly. Please see the following differences that were found.
 $([Environment]::NewLine)
 "@ + $body
 
