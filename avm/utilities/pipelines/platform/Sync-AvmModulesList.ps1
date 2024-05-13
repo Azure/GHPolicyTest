@@ -92,7 +92,7 @@ $([Environment]::NewLine)
   if ($unexpectedPatterns.Count -gt 0)
   {
     $body += @"
-**Unexpected patterns:
+**Unexpected patterns:**
 
 $($unexpectedPatterns -join ([Environment]::NewLine))
 $([Environment]::NewLine)
@@ -111,7 +111,7 @@ $([Environment]::NewLine)
   if ($incorrectModuleLines.Count -gt 0)
   {
     $body += @"
-**Modules that are not correctly sorted:
+**Modules that are not correctly sorted:**
 
 $($incorrectModuleLines -join ([Environment]::NewLine))
 $([Environment]::NewLine)
@@ -129,7 +129,7 @@ $([Environment]::NewLine)
   if ($incorrectPatternLines.Count -gt 0)
   {
     $body += @"
-**Patterns that are not correctly sorted:
+**Patterns that are not correctly sorted:**
 
 $($incorrectPatternLines -join ([Environment]::NewLine))
 $([Environment]::NewLine)
