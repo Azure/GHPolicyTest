@@ -139,7 +139,7 @@ $([Environment]::NewLine)
   if ($body -ne '') {
     $title = '[AVM core] AVM Module Issue template is not in sync with published module list'
     $label = 'Type: AVM :a: :v: :m:,Type: Hygiene :broom:,Needs: Triage :mag:'
-    $issues = gh issue list --state open --limit 500 --label $label --json 'title' --repo $Repo | ConvertFrom-Json -Depth 100
+    $issues = gh issue list --state open --limit 500 --label $label --json 'title,url' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issues.title -notcontains $title) {
       # create issue
