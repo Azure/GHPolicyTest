@@ -154,8 +154,8 @@ $([Environment]::NewLine)
       Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
     }
     else {
-      # add comment
-      gh issue comment $issues[0].url --body $body --repo $Repo
+      # update body
+      gh issue edit $issues[0].url --body $body --repo $Repo
     }
   }
 }
