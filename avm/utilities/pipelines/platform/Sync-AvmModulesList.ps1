@@ -143,7 +143,7 @@ $([Environment]::NewLine)
 
     $body = @"
 > [!IMPORTANT]
-> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv) and [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv). These CSV files are the single source of truth regarding published modules. Please update the `avm_module_issue.yml` accordingly. Please see the following differences that were found.
+> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv) and [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv). These CSV files are the single source of truth regarding published modules. Please update the `avm_module_issue.yml` accordingly. Please see the following differences that were found.
 $([Environment]::NewLine)
 "@ + $body
 
