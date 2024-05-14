@@ -352,6 +352,8 @@ configuration:
               - payloadType: Issue_Comment
           - commentContains:
               pattern: "#closethis"
+          - hasLabel:
+              label: "Type: Hygiene :broom:"
 
         then:
           - closeIssue
