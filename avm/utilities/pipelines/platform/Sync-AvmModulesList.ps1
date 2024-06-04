@@ -49,8 +49,8 @@ function Sync-AvmModulesList {
   }
   $endIndex-- # Go one back to last module line
 
-  $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/res\/.*' }
-  $listedPatterns = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/ptn\/.*' }
+  $listedModules = $issueTemplateContent[$startIndex..$endIndex] | Where-Object { -not $_.Contains('#') } | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/res\/.*' }
+  $listedPatterns = $issueTemplateContent[$startIndex..$endIndex] | Where-Object { -not $_.Contains('#') } | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' } | Where-Object { $_ -match 'avm\/ptn\/.*' }
 
   $body = ''
 
