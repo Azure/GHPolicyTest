@@ -76,7 +76,8 @@ function Set-AvmGithubIssueForWorkflow {
 
           if (-not $workflowRuns.ContainsKey($run.workflowName)) {
             $workflowRuns.Add($run.workflowName, $workflowRun)
-          } else {
+          }
+          else {
             $workflowRuns[$run.workflowName] = $workflowRun
           }
         }
@@ -96,20 +97,20 @@ function Set-AvmGithubIssueForWorkflow {
           $comment = @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
-> @Azure/avm-core-team-technical-bicep, the workflow for the ``$workflowRun.workflowName`` module has failed. Please investigate the failed workflow run.
+> @Azure/avm-core-team-technical-bicep, the workflow for the ``$workflowRun.workflowName.Replace('.', '/')`` module has failed. Please investigate the failed workflow run.
 "@
 
           if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
-            $workflowRun.workflowName = $workflowRun.workflowName.Replace('.', '/')
-            $moduleIndex = $workflowRun.workflowName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+            $moduleName = $workflowRun.workflowName.Replace('.', '/')
+            $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
             # get CSV data
-            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $workflowRun.workflowName
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
 
             if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # AVM - Module Issues
               $comment = @"
 > [!IMPORTANT]
-> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$workflowRun.workflowName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
+> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
               # assign owner
               $assign = gh issue edit $issueUrl --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
@@ -134,7 +135,8 @@ function Set-AvmGithubIssueForWorkflow {
         }
 
         $issuesCreated++
-      } else {
+      }
+      else {
         $issue = ($issues | Where-Object { $_.title -eq $issueName })[0]
 
         if (-not $issue.body.Contains($failedrun)) {
@@ -144,7 +146,8 @@ function Set-AvmGithubIssueForWorkflow {
             }
 
             $issuesCommented++
-          } else {
+          }
+          else {
             if (-not $issue.comments.body.Contains($failedrun)) {
               if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Close')) {
                 gh issue comment $issue.url --body $failedrun --repo $Repo
@@ -155,7 +158,8 @@ function Set-AvmGithubIssueForWorkflow {
           }
         }
       }
-    } else {
+    }
+    else {
       $issueName = "[Failed pipeline] $($workflowRun.workflowName)"
 
       if ($issues.title -contains $issueName) {
