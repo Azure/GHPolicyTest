@@ -96,20 +96,20 @@ function Set-AvmGithubIssueForWorkflow {
           $comment = @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
-> @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
+> @Azure/avm-core-team-technical-bicep, the workflow for the ``$workflowRun.workflowName`` module has failed. Please investigate the failed workflow run.
 "@
 
           if ($workflowRun.workflowName -match 'avm.(?:res|ptn)') {
-            $moduleName = $workflowRun.workflowName.Replace('.', '/')
-            $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
+            $workflowRun.workflowName = $workflowRun.workflowName.Replace('.', '/')
+            $moduleIndex = $workflowRun.workflowName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
             # get CSV data
-            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
+            $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $workflowRun.workflowName
 
             if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
               $ProjectNumber = 566 # AVM - Module Issues
               $comment = @"
 > [!IMPORTANT]
-> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
+> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$workflowRun.workflowName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
               # assign owner
               $assign = gh issue edit $issueUrl --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
