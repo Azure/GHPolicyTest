@@ -1,47 +1,59 @@
-# Add new issues to the correct project
-name: '.Platform: Assign Issue to Project'
+# Workflow for building and deploying a Hugo site to GitHub Pages
+name: .Platform - Test Module Index CSVs
 
 on:
-  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docs/static/module-indexes/**'
+  workflow_dispatch: {}
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
-  add-to-project:
-    name: Add Issues to Projects
+  test-module-index-csvs:
     runs-on: ubuntu-latest
-    permissions: write-all
     steps:
-      - name: 'Add Bug to Bug Board'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test All Bicep and Terraform Module Index CSVs
         shell: pwsh
         run: |
-          $title = 'Test issue'
-          $body = 'test body'
-          $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-          gh issue create --title $title --body $body --repo $Repo
-          $issueUrl = gh issue create --title $title --body $body --repo $Repo
-          $issueId = (gh issue view $issueUrl --repo $repo --json 'id'  | ConvertFrom-Json -Depth 100).id
-          Write-Host '#####'
-          Write-Host $issueUrl
-          Write-Host $issueId
+          $RepoRoot = $env:GITHUB_WORKSPACE
 
-          $project = gh api graphql -f query='
-            query($organization: String! $number: Int!){
-              organization(login: $organization){
-                projectV2(number: $number) {
-                  id
+          $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes "module-index.tests.ps1"
+
+          $csvFiles =  @(
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv"),
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv"),
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepUtilityModules.csv"),
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformResourceModules.csv"),
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformPatternModules.csv"),
+            $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
+          )
+
+          $RepoRoot
+          $testFile
+          $csvFiles
+
+          foreach ($file in $csvFiles) {
+            $pesterConfiguration = @{
+              Run    = @{
+                Container = New-PesterContainer -Path $testFile -Data @{
+                  CsvFilePath = $file
                 }
+                PassThru  = $false
               }
-            }' -f organization="Azure" -F number=614 | ConvertFrom-Json -Depth 10
-
-          $bugBoardId = $project.data.organization.projectV2.id
-
-          gh api graphql -f query='
-            mutation($project:ID!, $issue:ID!) {
-              addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
-                item {
-                  id
-                }
+              Output = @{
+                Verbosity = 'Detailed'
               }
-            }' -f project=$bugBoardId -f issue=$issueId --jq '.data.addProjectV2ItemById.projectV2Item.id'
+            }
+            Invoke-Pester -Configuration $pesterConfiguration
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
