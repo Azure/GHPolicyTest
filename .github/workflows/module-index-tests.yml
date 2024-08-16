@@ -25,7 +25,7 @@ jobs:
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes "module-index.tests.ps1"
+          $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes" "module-index.tests.ps1"
 
           $csvFiles =  @(
             $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv"),
