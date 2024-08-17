@@ -14,8 +14,6 @@ defaults:
 jobs:
   Test-Module-Index-CSVs:
     runs-on: ubuntu-latest
-    
-    continue-on-error: true
 
     steps:
       - name: Checkout Repo
@@ -31,6 +29,7 @@ jobs:
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
       - name: Test Bicep Pattern Module Index CSV
         shell: pwsh
@@ -39,4 +38,9 @@ jobs:
 
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv")
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Check for Failures
+        if: failure()
+        run: exit 1        
