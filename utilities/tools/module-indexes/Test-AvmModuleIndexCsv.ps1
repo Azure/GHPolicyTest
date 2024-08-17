@@ -36,7 +36,7 @@ param (
     )
 )
 
-# $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
+$RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
 
 $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes" "module-index.tests.ps1"
 
@@ -57,7 +57,7 @@ foreach ($file in $csvFiles) {
       Container = New-PesterContainer -Path $testFile -Data @{
         CsvFilePath = $file
       }
-      PassThru  = $false
+      PassThru  = $true
     }
     Output = @{
       Verbosity = 'Detailed'

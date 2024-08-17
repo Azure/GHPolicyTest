@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test All Bicep and Terraform Module Index CSVs
+      - name: Test Bicep Resource Module Index CSV
         shell: pwsh
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
@@ -28,3 +28,12 @@ jobs:
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test Bicep Pattern Module Index CSV
+        shell: pwsh
+        run: |
+          $RepoRoot = $env:GITHUB_WORKSPACE
+
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv")
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
