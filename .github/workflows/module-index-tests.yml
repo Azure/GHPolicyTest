@@ -26,6 +26,3 @@ jobs:
           $RepoRoot = $env:GITHUB_WORKSPACE
 
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1")
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
