@@ -29,7 +29,8 @@ jobs:
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+        if: ${{ always() }}
+
 
       - name: Test Bicep Pattern Module Index CSV
         shell: pwsh
@@ -39,8 +40,4 @@ jobs:
           . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-
-      - name: Check for Failures
-        if: failure()
-        run: exit 1        
+        if: ${{ always() }}
