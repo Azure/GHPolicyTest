@@ -3,22 +3,23 @@
     This script tests the Azure Verified Modules (AVM) module index CSV file for correctness and completeness.
 
 .DESCRIPTION
-    The Test-AvmModuleIndexCsv.ps1 script is designed to validate the structure and content of the AVM module index CSV file.
-    It checks for required columns, validates data formats, and ensures there are no missing or duplicate entries.
+    The Test-AvmModuleIndexCSVs.ps1 script is designed to validate the structure and content of the AVM module index CSV file.
+    It checks for required columns and values, validates data formats, and ensures there are no missing or duplicate entries, etc.
 
-.PARAMETER CsvFilePath
+    .PARAMETER CsvFilePath
     The path to the CSV file that needs to be tested.
 
-.PARAMETER IacLanguage
-    The Infrastructure as Code (IaC) language for which the module index is being tested (Bicep or Terraform).
+.EXAMPLE
+    .\Test-AvmModuleIndexCSVs.ps1
+    This command runs the script on the default, pre-specified CSV files.
 
 .EXAMPLE
-    .\Test-AvmModuleIndexCsv.ps1 -CsvFilePath "C:\path\to\module-index.csv" -IacLanguage "Bicep"
-    This command runs the script on the specified CSV file for the Bicep language and writes the results to the specified log file.
+    .\Test-AvmModuleIndexCSVs.ps1 -CsvFiles "C:\path\to\module-index.csv"
+    This command runs the script on the CSV file provided in the input paramter.
 
 .EXAMPLE
-    .\Test-AvmModuleIndexCsv.ps1 -CsvFilePath "C:\path\to\module-index.csv" -IacLanguage "Terraform"
-    This command runs the script on the specified CSV file for the Terraform language and writes the results to the default log file.
+    .\Test-AvmModuleIndexCSVs.ps1 -CsvFiles "C:\path\to\module-index1.csv", C:\path\to\module-index2.csv"
+    This command runs the script on the CSV files provided in the input paramter.
 #>
 
 [CmdletBinding()]
@@ -39,17 +40,6 @@ param (
 $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
 
 $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes" "module-index.tests.ps1"
-
-
-# $csvFiles =  @(
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv"),
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv"),
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepUtilityModules.csv"),
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformResourceModules.csv"),
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformPatternModules.csv"),
-#   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
-# )
-
 
 foreach ($file in $csvFiles) {
   $pesterConfiguration = @{

@@ -17,7 +17,6 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        id: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -27,10 +26,10 @@ jobs:
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepResourceModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
 
 
       - name: Test BicepPatternModules.csv
@@ -38,30 +37,30 @@ jobs:
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepPatternModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
 
       - name: Test BicepUtilityModules.csv
         shell: pwsh
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepUtilityModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "BicepUtilityModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
 
       - name: Test TerraformResourceModules.csv
         shell: pwsh
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformResourceModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformResourceModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
 
 
       - name: Test TerraformPatternModules.csv
@@ -69,17 +68,17 @@ jobs:
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformPatternModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformPatternModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
 
       - name: Test TerraformUtilityModules.csv
         shell: pwsh
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1") -CsvFiles $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ steps.checkout.outcome == 'success' }}
+        if: ${{ always() }}
