@@ -36,10 +36,6 @@ jobs:
             $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
           )
 
-          $RepoRoot
-          $testFile
-          $csvFiles
-
           foreach ($file in $csvFiles) {
             $pesterConfiguration = @{
               Run    = @{
