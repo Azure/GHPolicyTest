@@ -12,7 +12,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  test-module-index-csvs:
+  Test-Module-Index-CSVs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
