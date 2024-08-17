@@ -21,18 +21,7 @@
     This command runs the script on the specified CSV file for the Terraform language and writes the results to the default log file.
 #>
 
-[CmdletBinding()]
-param (
-    # [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = "Enter the full path to the CSV file.")]
-    # [ValidateNotNullOrEmpty()]
-    # [Alias("Path")]
-    # [string]$CsvFiles,
-
-    [Parameter(Mandatory = $false)]
-    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
-)
-
-$RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
+$RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
 
 $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes" "module-index.tests.ps1"
 
@@ -45,6 +34,7 @@ $csvFiles =  @(
   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformPatternModules.csv"),
   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
 )
+
 $csvFiles
 
 foreach ($file in $csvFiles) {
