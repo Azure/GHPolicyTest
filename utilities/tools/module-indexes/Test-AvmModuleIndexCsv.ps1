@@ -33,7 +33,6 @@ param (
 )
 
 $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
-$RepoRoot = Join-Path $RepoRoot "Azure-Verified-Modules"
 
 $testFile = Join-Path $RepoRoot "utilities" "tools" "module-indexes" "module-index.tests.ps1"
 
