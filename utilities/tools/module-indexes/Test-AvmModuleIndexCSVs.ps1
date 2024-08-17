@@ -3,22 +3,12 @@
     This script tests the Azure Verified Modules (AVM) module index CSV file for correctness and completeness.
 
 .DESCRIPTION
-    The Test-AvmModuleIndexCsv.ps1 script is designed to validate the structure and content of the AVM module index CSV file.
-    It checks for required columns, validates data formats, and ensures there are no missing or duplicate entries.
-
-.PARAMETER CsvFilePath
-    The path to the CSV file that needs to be tested.
-
-.PARAMETER IacLanguage
-    The Infrastructure as Code (IaC) language for which the module index is being tested (Bicep or Terraform).
+    The Test-AvmModuleIndexCSVs.ps1 script is designed to validate the structure and content of the AVM module index CSV file.
+    It checks for required columns and values, validates data formats, and ensures there are no missing or duplicate entries, etc.
 
 .EXAMPLE
-    .\Test-AvmModuleIndexCsv.ps1 -CsvFilePath "C:\path\to\module-index.csv" -IacLanguage "Bicep"
-    This command runs the script on the specified CSV file for the Bicep language and writes the results to the specified log file.
-
-.EXAMPLE
-    .\Test-AvmModuleIndexCsv.ps1 -CsvFilePath "C:\path\to\module-index.csv" -IacLanguage "Terraform"
-    This command runs the script on the specified CSV file for the Terraform language and writes the results to the default log file.
+    .\Test-AvmModuleIndexCSVs.ps1
+    This command runs the script on the pre-specified CSV files.
 #>
 
 $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
@@ -35,15 +25,13 @@ $csvFiles =  @(
   $(Join-Path $RepoRoot "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
 )
 
-$csvFiles
-
 foreach ($file in $csvFiles) {
   $pesterConfiguration = @{
     Run    = @{
       Container = New-PesterContainer -Path $testFile -Data @{
         CsvFilePath = $file
       }
-      PassThru  = $false
+      PassThru  = $true
     }
     Output = @{
       Verbosity = 'Detailed'

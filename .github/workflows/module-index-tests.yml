@@ -1,4 +1,4 @@
-# Workflow for building and deploying a Hugo site to GitHub Pages
+# Workflow for testing all module index CSVs
 name: .Platform - Test Module Index CSVs
 
 on:
@@ -25,7 +25,7 @@ jobs:
         run: |
           $RepoRoot = $env:GITHUB_WORKSPACE
 
-          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCsv.ps1")
+          . (Join-Path $RepoRoot "utilities" "tools" "module-indexes" "Test-AvmModuleIndexCSVs.ps1")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
