@@ -365,7 +365,7 @@ Describe "Tests for the $(Split-Path $CsvFilePath -Leaf) file" {
                         break
                     }
                 }
-                $issueExists | Should -Be $true -Because "there should be a GitHub issue that starts with ""[Module Proposal]"" and contains the ModuleName `$($moduleName)` between backticks"
+                $issueExists | Should -Be $true -Because "there should be a GitHub issue that starts with ""[Module Proposal]"" and contains the ModuleName ``$moduleName`` between backticks"
             }
         }
 
