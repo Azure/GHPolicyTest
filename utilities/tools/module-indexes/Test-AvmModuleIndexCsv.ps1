@@ -27,12 +27,12 @@ param (
     [ValidateNotNullOrEmpty()]
     [Alias("Path")]
     [array]$CsvFiles = @(
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepResourceModules.csv"),
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepPatternModules.csv"),
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepUtilityModules.csv"),
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformResourceModules.csv"),
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformPatternModules.csv"),
-      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepResourceModules.csv"),
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepPatternModules.csv"),
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "BicepUtilityModules.csv"),
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformResourceModules.csv"),
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformPatternModules.csv"),
+      $(Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName "docs" "static" "module-indexes" "TerraformUtilityModules.csv")
     )
 )
 
