@@ -113,7 +113,7 @@ configuration:
             - isActivitySender:
                 issueAuthor: true
             - commentContains:
-              pattern: "I CONFIRM I WISH TO OWN THIS AVM MODULE AND UNDERSTAND THE REQUIREMENTS AND DEFINITION OF A MODULE OWNER"
+              pattern: I CONFIRM I WISH TO OWN THIS AVM MODULE AND UNDERSTAND THE REQUIREMENTS AND DEFINITION OF A MODULE OWNER
         then:
           - removeLabel:
               label: "Needs: Author Feedback :ear:"
