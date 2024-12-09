@@ -109,12 +109,8 @@ configuration:
                 action: Closed
           - hasLabel:
               label: "Needs: Author Feedback :ear:"
-          - or:
-            - isActivitySender:
-                issueAuthor: true
-            - commentContains:
-              pattern: |
-                I CONFIRM I WISH TO OWN THIS AVM MODULE AND UNDERSTAND THE REQUIREMENTS AND DEFINITION OF A MODULE OWNER
+          - isActivitySender:
+              issueAuthor: true
         then:
           - removeLabel:
               label: "Needs: Author Feedback :ear:"
