@@ -109,6 +109,8 @@ configuration:
                 action: Closed
           - hasLabel:
               label: "Needs: Author Feedback :ear:"
+          - isActivitySender:
+              issueAuthor: true
         then:
           - removeLabel:
               label: "Needs: Author Feedback :ear:"
