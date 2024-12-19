@@ -99,7 +99,7 @@ configuration:
                 > [!NOTE]
                 > The "Status: Won't Fix :broken_heart:" label was added and the issue was closed as per [ITA10](https://azure.github.io/Azure-Verified-Modules/help-support/issue-triage/issue-triage-automation/#ita10).
 
-      - description: 'ITA11 - When a reply from anyone to an issue occurs, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
+      - description: 'ITA11 - When the author replies, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
         if:
           - or:
               - payloadType: Pull_Request_Review_Comment
