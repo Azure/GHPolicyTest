@@ -1,0 +1,8 @@
+baseURL = 'azure.github.io/AVM-Test'
+languageCode = 'en-us'
+title = 'My New Hugo Site'
+theme = 'hugo-theme-relearn'
+
+[module]
+  [[module.imports]]
+    path = 'github.com/McShelby/hugo-theme-relearn'
