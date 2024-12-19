@@ -1,6 +1,6 @@
 baseURL = 'azure.github.io/AVM-Test'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'AVM Test'
 theme = 'hugo-theme-relearn'
 
 [module]
