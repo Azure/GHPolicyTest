@@ -1,14 +1,15 @@
 +++
 title = "Azure Verified Modules"
+linkTitle = "Home"
 type = "home"
 description = "Azure Verified Modules Test Site"
 +++
 
 {{% notice style="tip" title="New Quickstart Guides for Bicep and Terraform" %}}
-**Check out our new [Quickstart Guides](/Azure-Verified-Modules/usage/quickstart/)!**
+**Check out our new [Quickstart Guides](/usage/quickstart/)!**
 
-- See [Bicep Quickstart Guide](/Azure-Verified-Modules/usage/quickstart/bicep/)
-- See [Terraform Quickstart Guide](/Azure-Verified-Modules/usage/quickstart/terraform/)
+- See [Bicep Quickstart Guide](/usage/quickstart/bicep/)
+- See [Terraform Quickstart Guide](/usage/quickstart/terraform/)
 {{% /notice %}}
 
 {{< youtube id="JbIMrJKW5N0" title="An introduction to Azure Verified Modules (AVM)" >}}
@@ -60,7 +61,7 @@ AVM is owned, developed & supported by Microsoft, you may raise a GitHub issue o
 
 You can also log a support ticket and these will be redirected to the AVM team and the module owner(s).
 
-See [Module Support](/Azure-Verified-Modules/help-support/module-support) for more information.
+See [Module Support](/help-support/module-support) for more information.
 {{% /notice %}}
 
 ## Next Steps
@@ -69,15 +70,15 @@ See [Module Support](/Azure-Verified-Modules/help-support/module-support) for mo
   <tr>
     <td style="border: none; padding: 0; width:60%">
 
-1. Review [Overview](/Azure-Verified-Modules/home/overview/)
+1. Review [Overview](/home/overview/)
 
-2. Review the [Module Classification Definitions](/Azure-Verified-Modules/specs/shared/module-classifications/)
+2. Review the [Module Classification Definitions](/specs/shared/module-classifications/)
 
-3. Review the [Specifications](/Azure-Verified-Modules/specs/module-specs/)
+3. Review the [Specifications](/specs/module-specs/)
 
-4. Review the [FAQ](/Azure-Verified-Modules/faq/)
+4. Review the [FAQ](/faq/)
 
-5. Learn how to [contribute to AVM](/Azure-Verified-Modules/contributing/)
+5. Learn how to [contribute to AVM](/contributing/)
     </td>
     <td style="border: none; padding: 0;">
 

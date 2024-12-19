@@ -2,7 +2,7 @@
 title = "Usage"
 linkTitle = 'Usage Guide'
 type = "chapter"
-weight = 25
+weight = 2
 collapsibleMenu = false
 [_build]
   render = 'never'

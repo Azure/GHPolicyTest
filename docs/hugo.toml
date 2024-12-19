@@ -1,4 +1,4 @@
-baseURL = 'azure.github.io/AVM-Test'
+baseURL = 'https://azure.github.io/AVM-Test/'
 languageCode = 'en-us'
 title = 'AVM'
 theme = 'hugo-theme-relearn'
@@ -6,6 +6,7 @@ theme = 'hugo-theme-relearn'
 images = ['images/hero.png']
 
 [params]
+    base = '/AVM-Test'
     disableExplicitIndexURLs = true
     disableLanguageSwitchingButton = false
     themeVariant = [
@@ -13,7 +14,7 @@ images = ['images/hero.png']
         { identifier = 'zen-light'      },
 	    { identifier = 'zen-dark'       }
     ]
-    disableLandingPageButton = true
+    disableLandingPageButton = false
     landingPageName = '<i class="fa-fw fas fa-home"></i> Azure Verified Modules'
     showVisitedLinks = false
     titleSeparator = '|'
@@ -47,19 +48,25 @@ images = ['images/hero.png']
     unsafe = true
     hardWraps = true
   
-[[menu.defined]]
-  pre = '<i class="fa-fw fas fa-home"></i> '
-  identifier = 'home'
-  name = 'Home'
-  pageRef = '/'
-  weight = 10
+# [[menu.defined]]
+#   pre = '<i class="fa-fw fas fa-home"></i> '
+#   identifier = 'home'
+#   name = 'Home'
+#   pageRef = '/'
+#   weight = 10
 
-  [[menu.defined]]
-    identifier = 'overview'
-    parent = 'home'
-    name = 'Overview'
-    pageRef = '/overview'
-    weight = 20
+# [[menu.defined]]
+#   identifier = 'overview'
+#   parent = 'home'
+#   name = 'Overview'
+#   weight = 20
+
+#   [[menu.defined]]
+#     identifier = 'introduction'
+#     parent = 'overview'
+#     name = 'Introduction'
+#     pageRef = '/overview/introduction'
+#     weight = 30
 
 
 
