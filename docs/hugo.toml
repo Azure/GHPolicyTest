@@ -17,6 +17,13 @@ images = ['images/hero.png']
     landingPageName = '<i class="fa-fw fas fa-home"></i> Azure Verified Modules'
     showVisitedLinks = false
     titleSeparator = '|'
+    sidebarmenus = [
+      { type = 'page', identifier = 'home', main = true, disableTitle = true, pageRef = '' },
+      { type = 'menu', identifier = 'defined', main = true, disableTitle = true },
+      # { type = 'menu', identifier = 'shortcuts', main = false, disableTitle = false },
+    ]
+    editURL = 'https://github.com/Azure/AVM-Test/edit/main/docs/content/${FilePath}'
+    disableAnchorScrolling = false
 
 [module]
   [[module.imports]]
@@ -40,12 +47,46 @@ images = ['images/hero.png']
     unsafe = true
     hardWraps = true
   
-[menus]
-  [[menus.main]]
-    name = 'Products'
-    pageRef = '/products'
+[[menu.defined]]
+  pre = '<i class="fa-fw fas fa-home"></i> '
+  identifier = 'home'
+  name = 'Home'
+  pageRef = '/'
+  weight = 10
+
+  [[menu.defined]]
+    identifier = 'overview'
+    parent = 'home'
+    name = 'Overview'
+    pageRef = '/overview'
     weight = 20
-  [[menus.main]]
-    name = 'Services'
-    pageRef = '/services'
-    weight = 30
+
+
+
+[[menu.shortcuts]]
+  pre = '<i class="fa-fw fab fa-github"></i> '
+  name = 'GitHub Repo'
+  url = 'https://github.com/McShelby/hugo-theme-relearn'
+  weight = 10
+
+[[menu.shortcuts]]
+  name = 'Showcases'
+  pageRef = '/showcase'
+  weight = 20
+
+[[menu.shortcuts]]
+  name = 'Credits'
+  pageRef = '/more/credits'
+  weight = 30
+
+[[menu.shortcuts]]
+  pre = '<i class="fa-fw fas fa-tags"></i> '
+  name = 'Tags'
+  pageRef = '/tags'
+  weight = 40
+
+[[menu.shortcuts]]
+  pre = '<i class="fa-fw fas fa-layer-group"></i> '
+  name = 'Categories'
+  pageRef = '/categories'
+  weight = 50
