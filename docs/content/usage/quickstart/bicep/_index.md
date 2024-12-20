@@ -1,6 +1,6 @@
 +++
 date = '2024-12-19T11:03:15-08:00'
-draft = true
+draft = false
 title = 'Bicep Quickstart Guide'
 linktitle = 'Bicep'
 weight = 1

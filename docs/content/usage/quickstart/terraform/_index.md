@@ -1,6 +1,6 @@
 +++
 date = '2024-12-19T11:03:22-08:00'
-draft = true
+draft = false
 title = 'Terraform Quickstart Guide'
 linktitle = 'Terraform'
 weight = 2
