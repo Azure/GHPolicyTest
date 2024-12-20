@@ -28,7 +28,7 @@ AVM is a common code base, a toolkit for our Customers, our Partners, and Micros
 Azure Verified Modules enable and accelerate consistent solution development and delivery of cloud-native or migrated applications and their supporting infrastructure by codifying Microsoft guidance (WAF), with best practice configurations.
     </td>
     <td style="border: none; padding: 0;">
-        <img src="images/avm_cycle.png" width=100% alt="AVM development cycle">
+        <img src="images/avm_cycle.png" width=70% alt="AVM development cycle">
     </td>
   </tr>
 </table>
@@ -38,7 +38,7 @@ Azure Verified Modules enable and accelerate consistent solution development and
 <table style="border: none; border-collapse: collapse; margin: 0; padding: 0;">
   <tr>
     <td style="border: none; padding: 0; width:55%">
-        <img src="images/avm_modules.png" width=90% alt="AVM module classifications">
+        <img src="images/avm_modules.png" width=80% alt="AVM module classifications">
     </td>
     <td style="border: none; padding: 0;">
 Azure Verified Modules provides two types of modules: Resource and Pattern modules.
