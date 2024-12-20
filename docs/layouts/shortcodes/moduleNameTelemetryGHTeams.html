@@ -129,13 +129,12 @@
   <tr>
     <td>{{ printf "%02d" $i }}{{ $i = add $i 1 }}</td>
     <td>{{ if $useLinks }} {{ if or (eq $item.ModuleStatus "Available :green_circle:") (eq $item.ModuleStatus "Orphaned :eyes:") }} <a href="{{ $item.RepoURL }}">{{ $item.ModuleName }}</a> {{ else }} {{ $item.ModuleName }} {{ end }} {{else}} {{ $item.ModuleName }} {{ end }} </td>
-    <td><code>{{ $item.TelemetryIdPrefix }}</code></td>
+    <td><code style="white-space:normal;">{{ $item.TelemetryIdPrefix }}</code></td>
     <td>
-      <code>{{ $item.ModuleOwnersGHTeam }}</code>
+      <code style="white-space:normal;">{{ $item.ModuleOwnersGHTeam }}</code>
       <br>
-      <code>{{ $item.ModuleContributorsGHTeam }}</code>
+      <code style="white-space:normal;">{{ $item.ModuleContributorsGHTeam }}</code>
     </td>
-    <td></td>
   </tr>
   {{ $hasModulesAvailable = true }}
   {{ end }}
@@ -164,13 +163,12 @@
   <tr>
     <td>{{ printf "%02d" $i }}{{ $i = add $i 1 }}</td>
     <td>{{ if $useLinks }} {{ if or (eq $item.ModuleStatus "Available :green_circle:") (eq $item.ModuleStatus "Orphaned :eyes:") }} <a href="{{ $item.PublicRegistryReference }}">{{ $item.ModuleName }}</a> {{ else }} {{ $item.ModuleName }} {{ end }} {{else}} {{ $item.ModuleName }} {{ end }} </td>
-    <td><code>{{ $item.TelemetryIdPrefix }}</code></td>
+    <td><code style="white-space:normal;">{{ $item.TelemetryIdPrefix }}</code></td>
     <td>
-      <code>{{ $item.ModuleOwnersGHTeam }}</code>
+      <code style="white-space:normal;">{{ $item.ModuleOwnersGHTeam }}</code>
       <br>
-      <code>{{ $item.ModuleContributorsGHTeam }}</code>
+      <code style="white-space:normal;">{{ $item.ModuleContributorsGHTeam }}</code>
     </td>
-    <td></td>
   </tr>
   {{ $hasModulesAvailable = true }}
   {{ end }}
