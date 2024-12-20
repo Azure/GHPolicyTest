@@ -15,7 +15,7 @@ images = ['images/hero.png']
 	    { identifier = 'zen-dark'       }
     ]
     disableLandingPageButton = false
-    landingPageName = '<i class="fa-fw fas fa-home"></i> Azure Verified Modules'
+    landingPageName = '<i class="fa-fw fas fa-home"></i> Home'
     showVisitedLinks = false
     titleSeparator = '|'
     sidebarmenus = [
@@ -27,6 +27,7 @@ images = ['images/hero.png']
     disableAnchorScrolling = false
     alwaysopen = false
     collapsibleMenu = true
+    disableRootBreadcrumb = false
 
 [module]
   [[module.imports]]

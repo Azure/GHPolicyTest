@@ -1,6 +1,6 @@
 +++
 title = "Azure Verified Modules"
-linkTitle = "Home"
+linkTitle = "Azure Verified Modules"
 type = "home"
 description = "Azure Verified Modules Test Site"
 +++
