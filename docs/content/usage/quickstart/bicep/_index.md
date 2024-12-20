@@ -279,7 +279,7 @@ Here is how quickly you can deliver the solution detailed in this section:
 
 Now that your template and parameter file is ready, you can deploy your solution to Azure. Use PowerShell or the Azure CLI to deploy your solution.
 
-{{< tabs title="Deploy with" groupid="scriptlanguage" >}}
+{{% tabs title="Deploy with" groupid="scriptlanguage" %}}
   {{% tab title ="PowerShell" %}}
 
   ```powershell
@@ -314,7 +314,7 @@ Now that your template and parameter file is ready, you can deploy your solution
   ```
 
   {{% /tab %}}
-{{< /tabs >}}
+{{% /tabs %}}
 
 Use the Azure portal, Azure PowerShell, or the Azure CLI to verify that the Key Vault instance and secret have been successfully created with the correct configuration.
 
